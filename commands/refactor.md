@@ -1,5 +1,5 @@
 ---
-description: Serena MCP 기반 자동 리팩토링. 분석 → 계획 → 실행 → 검증의 전체 워크플로우를 수행합니다.
+description: Serena MCP-based automated refactoring. Executes the full workflow of analysis, planning, execution, and verification.
 allowed-tools:
   - Task
   - Read
@@ -24,15 +24,15 @@ allowed-tools:
 
 # Refactor Command
 
-Serena MCP를 활용한 전체 리팩토링 워크플로우.
+Full refactoring workflow using Serena MCP.
 
-## 사용법
+## Usage
 
 ```
 /serena-refactor:refactor [target]
 ```
 
-## 워크플로우 개요
+## Workflow Overview
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -40,38 +40,38 @@ Serena MCP를 활용한 전체 리팩토링 워크플로우.
 ╠═══════════════════════════════════════════════════════════════════════════╣
 ║                                                                           ║
 ║  ┌─────────────────┐                                                      ║
-║  │ 0. INITIALIZE   │ ← Serena 프로젝트 활성화 + Git 백업                   ║
+║  │ 0. INITIALIZE   │ ← Activate Serena project + Git backup               ║
 ║  └────────┬────────┘                                                      ║
 ║           ▼                                                               ║
 ║  ┌─────────────────┐                                                      ║
-║  │ 1. SOLID 분석   │ ← serena-solid-analyzer                              ║
+║  │ 1. SOLID ANAL.  │ ← serena-solid-analyzer                              ║
 ║  └────────┬────────┘                                                      ║
 ║           ▼                                                               ║
 ║  ┌─────────────────┐                                                      ║
-║  │ 2. 계획 수립    │ ← refactor-planner                                   ║
+║  │ 2. PLAN         │ ← refactor-planner                                   ║
 ║  └────────┬────────┘                                                      ║
 ║           ▼                                                               ║
 ║  ╔═════════════════════════════════════════════════════════════════════╗  ║
-║  ║  GATE: 사용자 계획 승인                                              ║  ║
+║  ║  GATE: User Plan Approval                                           ║  ║
 ║  ╚═══════════════════════════════╤═════════════════════════════════════╝  ║
 ║                                  ▼                                        ║
 ║  ┌─────────────────────────────────────────────────────────────────┐     ║
-║  │ 3. 단계별 실행                                                    │     ║
+║  │ 3. STEP-BY-STEP EXECUTION                                        │     ║
 ║  │    ┌────────────────────────────────────────────────────────┐   │     ║
 ║  │    │ FOR each step:                                          │   │     ║
-║  │    │   3.1 serena-refactor-executor 실행                     │   │     ║
-║  │    │   3.2 refactor-auditor 검증                             │   │     ║
-║  │    │   3.3 PASS → 다음 단계 / FAIL → 수정                    │   │     ║
+║  │    │   3.1 Execute serena-refactor-executor                 │   │     ║
+║  │    │   3.2 Verify with refactor-auditor                     │   │     ║
+║  │    │   3.3 PASS → next step / FAIL → fix                    │   │     ║
 ║  │    │   [LOOP until all steps complete]                       │   │     ║
 ║  │    └────────────────────────────────────────────────────────┘   │     ║
 ║  └────────────────────────────────┬────────────────────────────────┘     ║
 ║                                   ▼                                       ║
 ║  ┌─────────────────┐                                                      ║
-║  │ 4. 최종 검증    │ ← refactor-auditor (전체)                            ║
+║  │ 4. FINAL VERIFY │ ← refactor-auditor (full)                            ║
 ║  └────────┬────────┘                                                      ║
 ║           ▼                                                               ║
 ║  ┌─────────────────┐                                                      ║
-║  │ 5. 완료 리포트  │                                                      ║
+║  │ 5. REPORT       │                                                      ║
 ║  └─────────────────┘                                                      ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -79,197 +79,197 @@ Serena MCP를 활용한 전체 리팩토링 워크플로우.
 
 ---
 
-## Step 0: 초기화
+## Step 0: Initialize
 
-### Serena 프로젝트 활성화
+### Activate Serena Project
 ```
 mcp__plugin_serena_serena__activate_project:
-  project: [대상 디렉토리]
+  project: [target directory]
 ```
 
-### Git 백업 생성
+### Create Git Backup
 ```bash
 git stash push -m "pre-refactor-backup-$(date +%Y%m%d-%H%M%S)"
 ```
 
 ---
 
-## Step 1: SOLID 분석
+## Step 1: SOLID Analysis
 
 ```
 Task:
   agent: serena-solid-analyzer
   prompt: |
-    [target] 대상으로 SOLID 분석을 수행하세요.
+    Perform SOLID analysis on [target].
 
-    Serena 심볼 도구를 활용하여:
-    1. 모든 클래스/함수의 구조 분석
-    2. 참조 관계 매핑
-    3. SOLID 위반 탐지
-    4. 각 위반에 대한 자동 수정 경로 제시
+    Using Serena symbol tools:
+    1. Analyze all class/function structures
+    2. Map reference relationships
+    3. Detect SOLID violations
+    4. Provide auto-fix paths for each violation
 ```
 
-분석 결과 요약 표시
+Display analysis summary
 
 ---
 
-## Step 2: 리팩토링 계획
+## Step 2: Refactoring Plan
 
 ```
 Task:
   agent: refactor-planner
   prompt: |
-    SOLID 분석 결과를 바탕으로 리팩토링 계획을 수립하세요.
+    Create refactoring plan based on SOLID analysis results.
 
-    요구사항:
-    1. 우선순위별 단계 정의
-    2. 각 단계의 Serena 도구 실행 계획
-    3. 영향 범위 분석
-    4. 롤백 경로 명시
+    Requirements:
+    1. Define steps by priority
+    2. Serena tool execution plan for each step
+    3. Impact scope analysis
+    4. Specify rollback paths
 ```
 
-### 사용자 승인
+### User Approval
 
 ```yaml
 AskUserQuestion:
-  question: "리팩토링 계획을 검토했습니다. 진행할까요?"
-  header: "계획 승인"
+  question: "Reviewed the refactoring plan. Proceed?"
+  header: "Plan Approval"
   options:
-    - label: "승인 - 진행"
-      description: "계획대로 리팩토링 실행"
-    - label: "수정 필요"
-      description: "계획 조정 후 재검토"
-    - label: "취소"
-      description: "리팩토링 중단"
+    - label: "Approve - Proceed"
+      description: "Execute refactoring as planned"
+    - label: "Needs modification"
+      description: "Adjust plan and re-review"
+    - label: "Cancel"
+      description: "Abort refactoring"
 ```
 
 ---
 
-## Step 3: 단계별 실행
+## Step 3: Step-by-Step Execution
 
-### 각 단계에 대해:
+### For each step:
 
-#### 3.1 실행
+#### 3.1 Execute
 ```
 Task:
   agent: serena-refactor-executor
   prompt: |
-    리팩토링 Step [N]을 실행하세요.
+    Execute refactoring Step [N].
 
-    목표: [단계 목표]
-    대상: [심볼 경로]
+    Goal: [step goal]
+    Target: [symbol path]
 
-    Serena 도구 실행 순서:
-    1. [도구 및 파라미터]
-    2. [도구 및 파라미터]
+    Serena tool execution order:
+    1. [tool and parameters]
+    2. [tool and parameters]
     ...
 ```
 
-#### 3.2 검증
+#### 3.2 Verify
 ```
 Task:
   agent: refactor-auditor
   prompt: |
-    Step [N] 리팩토링 결과를 검증하세요.
+    Verify Step [N] refactoring results.
 
-    체크 항목:
-    1. 불완전 패턴 (TODO, FIXME)
-    2. 참조 무결성
-    3. SOLID 개선도
-    4. 테스트 통과
+    Check items:
+    1. Incomplete patterns (TODO, FIXME)
+    2. Reference integrity
+    3. SOLID improvement
+    4. Test passing
 ```
 
-#### 3.3 결과 처리
+#### 3.3 Handle Results
 
-**PASS인 경우:**
-- 다음 단계 진행
-- 진행 상황 업데이트
+**If PASS:**
+- Proceed to next step
+- Update progress
 
-**FAIL인 경우:**
+**If FAIL:**
 ```yaml
 AskUserQuestion:
-  question: "Step [N] 검증 실패. 어떻게 할까요?"
-  header: "검증 실패"
+  question: "Step [N] verification failed. What to do?"
+  header: "Verification Failed"
   options:
-    - label: "문제 수정 후 재검증"
-      description: "발견된 문제 수정"
-    - label: "이 단계 건너뛰기"
-      description: "다음 단계로 진행 (권장하지 않음)"
-    - label: "롤백"
-      description: "이 단계 변경 취소"
+    - label: "Fix issues and re-verify"
+      description: "Fix discovered issues"
+    - label: "Skip this step"
+      description: "Proceed to next step (not recommended)"
+    - label: "Rollback"
+      description: "Undo this step's changes"
 ```
 
 ---
 
-## Step 4: 최종 검증
+## Step 4: Final Verification
 
 ```
 Task:
   agent: refactor-auditor
   prompt: |
-    전체 리팩토링 결과를 최종 검증하세요.
+    Perform final verification of all refactoring results.
 
-    검증 범위: 모든 변경 파일
+    Scope: All changed files
 
-    체크 항목:
-    1. 전체 SOLID 개선도
-    2. 모든 테스트 통과
-    3. 새로운 위반 없음
-    4. 참조 무결성
+    Check items:
+    1. Overall SOLID improvement
+    2. All tests passing
+    3. No new violations
+    4. Reference integrity
 ```
 
 ---
 
-## Step 5: 완료 리포트
+## Step 5: Completion Report
 
 ```markdown
-## 리팩토링 완료 리포트
+## Refactoring Completion Report
 
-### 요약
-- 총 단계: [N]
-- 성공 단계: [M]
-- 변경 파일: [X]
+### Summary
+- Total steps: [N]
+- Successful steps: [M]
+- Changed files: [X]
 
-### SOLID 개선도
-| 원칙 | Before | After | 개선율 |
-|------|--------|-------|--------|
+### SOLID Improvement
+| Principle | Before | After | Improvement |
+|-----------|--------|-------|-------------|
 | SRP | X | Y | +Z% |
 | OCP | X | Y | +Z% |
 | ... | ... | ... | ... |
 
-### 주요 변경 사항
-1. [변경 1]
-2. [변경 2]
+### Major Changes
+1. [Change 1]
+2. [Change 2]
 ...
 
-### 테스트 결과
-✓ 모든 테스트 통과
+### Test Results
+✓ All tests passed
 
-### 다음 단계
-- `git commit`으로 변경 사항 커밋
-- `git stash drop`으로 백업 삭제 (선택)
+### Next Steps
+- `git commit` to commit changes
+- `git stash drop` to delete backup (optional)
 ```
 
 ---
 
-## 롤백
+## Rollback
 
-언제든지 롤백 가능:
+Rollback available anytime:
 
 ```bash
-# 전체 롤백
+# Full rollback
 git stash pop
 
-# 또는 특정 파일만
+# Or specific files only
 git checkout -- [file]
 ```
 
 ---
 
-## 핵심 규칙
+## Core Rules
 
-1. **심볼 도구 우선** - Serena 심볼 도구가 항상 1순위
-2. **단계별 검증** - 각 단계 완료 후 반드시 검증
-3. **사용자 동의** - 주요 결정은 사용자 승인 필요
-4. **롤백 가능** - 언제든 원복 가능한 상태 유지
-5. **불완전 금지** - TODO/FIXME 남기면 실패
+1. **Symbol tools first** - Serena symbol tools are always priority
+2. **Step-by-step verification** - Must verify after each step
+3. **User consent** - Major decisions require user approval
+4. **Rollback ready** - Always maintain restorable state
+5. **No incomplete code** - Leaving TODO/FIXME means failure

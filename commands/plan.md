@@ -1,5 +1,5 @@
 ---
-description: 리팩토링 계획만 수립. 분석 결과를 바탕으로 단계별 계획을 생성하고 사용자 검토를 받습니다.
+description: Refactoring plan creation only. Generates step-by-step plans based on analysis results for user review.
 allowed-tools:
   - Task
   - Read
@@ -15,59 +15,59 @@ allowed-tools:
 
 # Plan Command
 
-리팩토링 계획 수립 전용 명령어.
+Refactoring plan creation command.
 
-## 사용법
+## Usage
 
 ```
 /serena-refactor:plan [target]
 ```
 
-## 워크플로우
+## Workflow
 
-### Step 1: Serena 프로젝트 활성화
+### Step 1: Activate Serena Project
 
 ```
 mcp__plugin_serena_serena__activate_project:
-  project: [대상 디렉토리]
+  project: [target directory]
 ```
 
-### Step 2: 분석 (간략)
+### Step 2: Analysis (Brief)
 
 ```
 Task:
   agent: serena-solid-analyzer
   prompt: |
-    [target] 대상으로 SOLID 분석을 수행하세요.
-    계획 수립에 필요한 핵심 정보만 수집합니다.
+    Perform SOLID analysis on [target].
+    Collect only key information needed for planning.
 ```
 
-### Step 3: 계획 수립
+### Step 3: Create Plan
 
 ```
 Task:
   agent: refactor-planner
   prompt: |
-    분석 결과를 바탕으로 상세 리팩토링 계획을 수립하세요.
+    Create detailed refactoring plan based on analysis results.
 
-    포함 사항:
-    1. 의존성 그래프
-    2. 우선순위별 단계 정의
-    3. 각 단계의 Serena 도구 실행 계획
-    4. 영향 범위 및 리스크
-    5. 롤백 경로
+    Include:
+    1. Dependency graph
+    2. Steps defined by priority
+    3. Serena tool execution plan for each step
+    4. Impact scope and risks
+    5. Rollback paths
 ```
 
-### Step 4: 계획 출력 및 저장
+### Step 4: Output and Save Plan
 
 ```markdown
-## 리팩토링 계획: [target]
+## Refactoring Plan: [target]
 
-[상세 계획 내용]
+[Detailed plan content]
 
 ---
 
-계획을 파일로 저장했습니다: .refactor-plan.md
+Plan saved to file: .refactor-plan.md
 
-실행하려면: `/serena-refactor:refactor --plan .refactor-plan.md`
+To execute: `/serena-refactor:refactor --plan .refactor-plan.md`
 ```

@@ -1,5 +1,5 @@
 ---
-description: Serena 기반 안전한 심볼 이름 변경. 코드베이스 전체에서 모든 참조를 자동으로 업데이트합니다.
+description: Serena-based safe symbol renaming. Automatically updates all references across the entire codebase.
 allowed-tools:
   - Task
   - Read
@@ -12,24 +12,24 @@ allowed-tools:
 
 # Rename Command
 
-Serena MCP를 활용한 안전한 심볼 이름 변경.
+Safe symbol renaming using Serena MCP.
 
-## 사용법
+## Usage
 
 ```
 /serena-refactor:rename <symbol> <new-name>
 ```
 
-## 예시
+## Examples
 
 ```
 /serena-refactor:rename UserService/getUser fetchUserById
 /serena-refactor:rename OldClassName NewClassName
 ```
 
-## 워크플로우
+## Workflow
 
-### Step 1: 심볼 확인
+### Step 1: Verify Symbol
 
 ```
 mcp__plugin_serena_serena__find_symbol:
@@ -37,86 +37,86 @@ mcp__plugin_serena_serena__find_symbol:
   include_body: False
 ```
 
-심볼을 찾지 못한 경우:
+If symbol not found:
 ```yaml
 AskUserQuestion:
-  question: "심볼 '[symbol]'을 찾을 수 없습니다. 정확한 경로를 입력해주세요."
-  header: "심볼 경로"
+  question: "Symbol '[symbol]' not found. Please enter the correct path."
+  header: "Symbol Path"
 ```
 
-### Step 2: 영향 범위 분석
+### Step 2: Impact Analysis
 
 ```
 mcp__plugin_serena_serena__find_referencing_symbols:
   name_path: [symbol]
-  relative_path: [파일]
+  relative_path: [file]
 ```
 
-### Step 3: 변경 미리보기
+### Step 3: Change Preview
 
 ```markdown
-## 이름 변경 미리보기
+## Rename Preview
 
-### 대상 심볼
-- 이름: [symbol]
-- 파일: [file:line]
-- 타입: [class/method/function/variable]
+### Target Symbol
+- Name: [symbol]
+- File: [file:line]
+- Type: [class/method/function/variable]
 
-### 영향 범위
-| 파일 | 참조 수 | 코드 스니펫 |
-|------|---------|-------------|
+### Impact Scope
+| File | References | Code Snippet |
+|------|------------|--------------|
 | src/service.ts | 3 | `userService.getUser()` |
 | src/controller.ts | 2 | `getUser(id)` |
 | ... | ... | ... |
 
-**총 참조: N개**
+**Total references: N**
 ```
 
-### Step 4: 사용자 확인
+### Step 4: User Confirmation
 
 ```yaml
 AskUserQuestion:
-  question: "[symbol] → [new-name] 변경을 진행할까요? (N개 참조 업데이트)"
-  header: "이름 변경"
+  question: "Proceed with [symbol] → [new-name]? (N references to update)"
+  header: "Rename"
   options:
-    - label: "진행"
-      description: "모든 참조 자동 업데이트"
-    - label: "취소"
-      description: "변경 취소"
+    - label: "Proceed"
+      description: "Auto-update all references"
+    - label: "Cancel"
+      description: "Cancel change"
 ```
 
-### Step 5: 이름 변경 실행
+### Step 5: Execute Rename
 
 ```
 mcp__plugin_serena_serena__rename_symbol:
   name_path: [symbol]
-  relative_path: [파일]
+  relative_path: [file]
   new_name: [new-name]
 ```
 
-### Step 6: 결과 확인
+### Step 6: Verify Results
 
 ```markdown
-## 이름 변경 완료
+## Rename Complete
 
 ✓ [symbol] → [new-name]
-✓ [N]개 참조 업데이트 완료
+✓ [N] references updated
 
-### 변경된 파일
+### Changed Files
 - src/service.ts
 - src/controller.ts
 - ...
 
-### 다음 단계
-- 테스트 실행 권장: `npm test`
-- 문제 발생 시 롤백: `git checkout -- .`
+### Next Steps
+- Recommended: Run tests `npm test`
+- On issues: Rollback with `git checkout -- .`
 ```
 
 ---
 
-## 핵심 규칙
+## Core Rules
 
-1. **심볼 도구 신뢰** - Serena rename_symbol은 모든 참조 자동 업데이트
-2. **미리보기 필수** - 변경 전 영향 범위 확인
-3. **사용자 확인** - 실행 전 명시적 동의
-4. **테스트 권장** - 변경 후 테스트 실행 권장
+1. **Trust symbol tools** - Serena rename_symbol auto-updates all references
+2. **Preview required** - Verify impact scope before change
+3. **User confirmation** - Explicit consent before execution
+4. **Recommend tests** - Recommend test run after change

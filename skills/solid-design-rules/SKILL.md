@@ -1,117 +1,367 @@
 ---
-description: SOLID 원칙과 TDD 강제 규칙. 유지보수 가능한 소프트웨어 설계를 위한 레퍼런스. 코드 품질 분석, 리팩토링 계획, 아키텍처 검증 시 참조.
+description: SOLID principles and TDD enforcement rules. Reference for maintainable software design. Used for code quality analysis, refactoring planning, and architecture verification.
 name: solid-design-rules
 ---
 # SOLID Design Rules
 
-## 핵심 원칙
+## Core Principle
 
-**변경 격리를 위한 설계.**
-무엇이 변경될지 예측하고, 그 변경의 전파 범위를 엄격히 제한하라.
-
----
-
-## 1. 단일 책임 원칙 (SRP)
-
-모든 클래스, 모듈, 함수는 **정확히 하나의 변경 이유**만 가져야 한다.
-
-**금지:**
-- 비즈니스 규칙, 데이터 영속성, 포맷팅을 하나의 클래스에 혼합
-- 관련 없는 관심사를 조율하는 "God" 서비스
-- 20줄 이상의 메서드
-- 5개 이상의 의존성을 가진 클래스
-
-**필수:**
-- 정책, 오케스트레이션, 실행의 명시적 분리
-- 작고, 의도가 명확한 컴포넌트
+**Design for change isolation.**
+Predict what will change and strictly limit the propagation scope of those changes.
 
 ---
 
-## 2. 개방-폐쇄 원칙 (OCP)
+## 1. Single Responsibility Principle (SRP)
 
-시스템은 **확장에는 열려 있고, 수정에는 닫혀 있어야** 한다.
+Every class, module, and function must have **exactly one reason to change**.
 
-**금지:**
-- 타입이나 enum 증가에 따른 `if/switch` 체인
-- 핵심 로직에 내장된 기능 플래그
-- 동작을 분기하는 boolean 파라미터
+**Prohibited:**
+- Mixing business rules, data persistence, and formatting in one class
+- "God" services that coordinate unrelated concerns
+- Methods exceeding 20 lines
+- Classes with more than 5 dependencies
 
-**필수:**
-- 인터페이스 기반 확장성
-- 전략 패턴과 다형적 디스패치
+**Required:**
+- Explicit separation of policy, orchestration, and execution
+- Small, intent-revealing components
 
----
+**Example - Violation:**
+```typescript
+// ❌ SRP Violation: Handles business logic, DB, and email
+class UserService {
+  async createUser(data: UserData) {
+    // Validation logic
+    if (!data.email.includes('@')) throw new Error('Invalid email');
 
-## 3. 리스코프 치환 원칙 (LSP)
+    // DB save
+    await db.query('INSERT INTO users...');
 
-서브타입은 기본 타입으로 **완전히 대체 가능**해야 한다.
+    // Email sending
+    await smtp.send({ to: data.email, subject: 'Welcome!' });
 
-**금지:**
-- 서브클래스에서 빈 메서드 구현
-- 호출 코드에서 `instanceof` 체크
-- 서브클래스에서 사전 조건 강화
-- 예상치 못한 예외 던지기
+    // Logging
+    console.log('User created:', data.email);
+  }
+}
+```
 
-**필수:**
-- 모든 구현에서 동작 계약 유지
+**Example - Fixed:**
+```typescript
+// ✓ SRP Compliant: Each responsibility separated
+class UserValidator {
+  validate(data: UserData): ValidationResult { ... }
+}
 
----
+class UserRepository {
+  async save(user: User): Promise<void> { ... }
+}
 
-## 4. 인터페이스 분리 원칙 (ISP)
+class WelcomeEmailSender {
+  async send(user: User): Promise<void> { ... }
+}
 
-인터페이스는 **클라이언트 관점**에서 설계되어야 한다.
+class UserCreationUseCase {
+  constructor(
+    private validator: UserValidator,
+    private repo: UserRepository,
+    private emailer: WelcomeEmailSender
+  ) {}
 
-**금지:**
-- 5개 이상의 메서드를 가진 인터페이스
-- 구현체가 사용하지 않는 메서드에 의존하도록 강제
-
-**필수:**
-- 역할별 최소 인터페이스
-- 명령과 쿼리의 분리
-
----
-
-## 5. 의존성 역전 원칙 (DIP)
-
-상위 레벨 비즈니스 로직은 **하위 레벨 세부사항에 의존하면 안 된다**.
-
-**금지:**
-- 비즈니스 로직에서 인프라 클래스에 `new` 키워드 사용
-- 도메인 서비스에서 직접적인 DB/HTTP 클라이언트 사용
-- 도메인 엔티티에 프레임워크 어노테이션
-
-**필수:**
-- 생성자 기반 의존성 주입
-- 비즈니스 레이어가 소유하는 인터페이스
-
----
-
-## 6. TDD 규칙
-
-### 구현 전 테스트
-
-1. 실패하는 테스트 시나리오를 먼저 정의
-2. 테스트를 만족시키기 위한 구현만 작성
-3. 테스트 통과 후에만 리팩토링
-
-### 설계 위반 신호
-
-| 신호 | 위반 |
-|------|------|
-| 과도한 모킹 | SRP 위반 |
-| private 메서드 테스트 필요 | 잘못된 경계 |
-| 단위 테스트에 DB/네트워크 필요 | DIP 위반 |
+  async execute(data: UserData): Promise<User> {
+    this.validator.validate(data);
+    const user = await this.repo.save(new User(data));
+    await this.emailer.send(user);
+    return user;
+  }
+}
+```
 
 ---
 
-## 7. Repository 패턴
+## 2. Open-Closed Principle (OCP)
 
-**Repository = 컬렉션 추상화, 영속성 메커니즘이 아님**
+Systems must be **open for extension, closed for modification**.
 
-**금지:**
-- 인터페이스에 SQL/쿼리 언어
-- 메서드 이름에 인프라 용어
+**Prohibited:**
+- `if/switch` chains that grow with types or enums
+- Feature flags embedded in core logic
+- Boolean parameters that branch behavior
 
-**필수:**
-- 도메인 중심 연산 (`find`, `save`, `exists`)
-- 테스트를 위해 인메모리 구현으로 대체 가능해야 함
+**Required:**
+- Interface-based extensibility
+- Strategy pattern and polymorphic dispatch
+
+**Example - Violation:**
+```typescript
+// ❌ OCP Violation: Adding new payment requires modifying switch
+function processPayment(type: string, amount: number) {
+  switch (type) {
+    case 'credit': return processCreditCard(amount);
+    case 'paypal': return processPaypal(amount);
+    case 'crypto': return processCrypto(amount);
+    // Adding new type requires case here...
+  }
+}
+```
+
+**Example - Fixed:**
+```typescript
+// ✓ OCP Compliant: New payment just implements interface
+interface PaymentProcessor {
+  process(amount: number): Promise<PaymentResult>;
+}
+
+class CreditCardProcessor implements PaymentProcessor { ... }
+class PaypalProcessor implements PaymentProcessor { ... }
+class CryptoProcessor implements PaymentProcessor { ... }
+
+// New method: Just add implementation without modifying existing code
+class ApplePayProcessor implements PaymentProcessor { ... }
+
+class PaymentService {
+  constructor(private processors: Map<string, PaymentProcessor>) {}
+
+  async process(type: string, amount: number) {
+    return this.processors.get(type)?.process(amount);
+  }
+}
+```
+
+---
+
+## 3. Liskov Substitution Principle (LSP)
+
+Subtypes must be **completely substitutable** for their base types.
+
+**Prohibited:**
+- Empty method implementations in subclasses
+- `instanceof` checks in calling code
+- Strengthening preconditions in subclasses
+- Throwing unexpected exceptions
+
+**Required:**
+- Behavioral contracts maintained across all implementations
+
+**Example - Violation:**
+```typescript
+// ❌ LSP Violation: Square breaks Rectangle contract
+class Rectangle {
+  constructor(public width: number, public height: number) {}
+  setWidth(w: number) { this.width = w; }
+  setHeight(h: number) { this.height = h; }
+  area() { return this.width * this.height; }
+}
+
+class Square extends Rectangle {
+  setWidth(w: number) { this.width = this.height = w; }  // Contract violation!
+  setHeight(h: number) { this.width = this.height = h; } // Contract violation!
+}
+
+// Client code doesn't work as expected
+function resize(rect: Rectangle) {
+  rect.setWidth(5);
+  rect.setHeight(10);
+  console.log(rect.area()); // Rectangle: 50, Square: 100 (!)
+}
+```
+
+**Example - Fixed:**
+```typescript
+// ✓ LSP Compliant: Separated with common interface
+interface Shape {
+  area(): number;
+}
+
+class Rectangle implements Shape {
+  constructor(public width: number, public height: number) {}
+  area() { return this.width * this.height; }
+}
+
+class Square implements Shape {
+  constructor(public side: number) {}
+  area() { return this.side * this.side; }
+}
+```
+
+---
+
+## 4. Interface Segregation Principle (ISP)
+
+Interfaces must be designed from the **client's perspective**.
+
+**Prohibited:**
+- Interfaces with more than 5 methods
+- Forcing implementations to depend on methods they don't use
+
+**Required:**
+- Minimal interfaces per role
+- Separation of commands and queries
+
+**Example - Violation:**
+```typescript
+// ❌ ISP Violation: Fat interface
+interface Worker {
+  work(): void;
+  eat(): void;
+  sleep(): void;
+  attendMeeting(): void;
+  writeReport(): void;
+}
+
+// Robot doesn't need eat, sleep but forced to implement
+class Robot implements Worker {
+  work() { ... }
+  eat() { throw new Error('Not applicable'); }  // Meaningless implementation
+  sleep() { throw new Error('Not applicable'); }
+  ...
+}
+```
+
+**Example - Fixed:**
+```typescript
+// ✓ ISP Compliant: Separated by role
+interface Workable {
+  work(): void;
+}
+
+interface Feedable {
+  eat(): void;
+}
+
+interface Sleepable {
+  sleep(): void;
+}
+
+class Human implements Workable, Feedable, Sleepable { ... }
+class Robot implements Workable { ... }  // Only implements what's needed
+```
+
+---
+
+## 5. Dependency Inversion Principle (DIP)
+
+High-level business logic must **not depend on low-level details**.
+
+**Prohibited:**
+- `new` keyword for infrastructure classes in business logic
+- Direct DB/HTTP client usage in domain services
+- Framework annotations on domain entities
+
+**Required:**
+- Constructor-based dependency injection
+- Interfaces owned by business layer
+
+**Example - Violation:**
+```typescript
+// ❌ DIP Violation: Business logic directly depends on concrete classes
+class OrderService {
+  private db = new MySQLConnection();  // Direct creation!
+  private mailer = new SendGridClient(); // Direct creation!
+
+  async createOrder(data: OrderData) {
+    await this.db.query('INSERT INTO orders...');
+    await this.mailer.send(data.customerEmail, 'Order confirmed');
+  }
+}
+```
+
+**Example - Fixed:**
+```typescript
+// ✓ DIP Compliant: Depends on abstractions, injected
+interface OrderRepository {
+  save(order: Order): Promise<void>;
+}
+
+interface NotificationService {
+  notify(recipient: string, message: string): Promise<void>;
+}
+
+class OrderService {
+  constructor(
+    private repo: OrderRepository,       // Interface injected
+    private notifier: NotificationService // Interface injected
+  ) {}
+
+  async createOrder(data: OrderData) {
+    const order = new Order(data);
+    await this.repo.save(order);
+    await this.notifier.notify(data.customerEmail, 'Order confirmed');
+  }
+}
+
+// Implementations injected from outside
+const service = new OrderService(
+  new MySQLOrderRepository(),
+  new SendGridNotifier()
+);
+```
+
+---
+
+## 6. TDD Rules
+
+### Test Before Implementation
+
+1. Define failing test scenarios first
+2. Write only enough implementation to satisfy tests
+3. Refactor only after tests pass
+
+### Design Violation Signals
+
+| Signal | Violation |
+|--------|-----------|
+| Excessive mocking | SRP violation |
+| Need to test private methods | Wrong boundaries |
+| DB/Network needed for unit tests | DIP violation |
+
+**Example - Testable Design:**
+```typescript
+// ✓ Testable: Dependencies can be mocked via injection
+describe('OrderService', () => {
+  it('should save order and notify customer', async () => {
+    const mockRepo = { save: jest.fn() };
+    const mockNotifier = { notify: jest.fn() };
+    const service = new OrderService(mockRepo, mockNotifier);
+
+    await service.createOrder({ customerEmail: 'test@test.com' });
+
+    expect(mockRepo.save).toHaveBeenCalled();
+    expect(mockNotifier.notify).toHaveBeenCalledWith('test@test.com', expect.any(String));
+  });
+});
+```
+
+---
+
+## 7. Repository Pattern
+
+**Repository = Collection abstraction, not persistence mechanism**
+
+**Prohibited:**
+- SQL/query language in interfaces
+- Infrastructure terms in method names
+
+**Required:**
+- Domain-centric operations (`find`, `save`, `exists`)
+- Swappable with in-memory implementation for tests
+
+**Example:**
+```typescript
+// ✓ Domain-centric interface
+interface UserRepository {
+  findById(id: UserId): Promise<User | null>;
+  findByEmail(email: Email): Promise<User | null>;
+  save(user: User): Promise<void>;
+  exists(id: UserId): Promise<boolean>;
+}
+
+// In-memory implementation for tests
+class InMemoryUserRepository implements UserRepository {
+  private users: Map<string, User> = new Map();
+
+  async findById(id: UserId) {
+    return this.users.get(id.value) ?? null;
+  }
+  // ...
+}
+```

@@ -1,5 +1,5 @@
 ---
-description: Serena 기반 코드 추출. 메서드, 인터페이스, 클래스 추출을 심볼 수준에서 안전하게 수행합니다.
+description: Serena-based code extraction. Safely performs method, interface, and class extraction at the symbol level.
 allowed-tools:
   - Task
   - Read
@@ -15,29 +15,29 @@ allowed-tools:
 
 # Extract Command
 
-Serena MCP를 활용한 코드 추출 리팩토링.
+Code extraction refactoring using Serena MCP.
 
-## 사용법
+## Usage
 
 ```
 /serena-refactor:extract <type> <source> [options]
 ```
 
-### 추출 유형
+### Extraction Types
 
-| 유형 | 설명 | 예시 |
-|------|------|------|
-| `method` | 메서드 추출 | `/extract method UserService/processUser` |
-| `interface` | 인터페이스 추출 | `/extract interface UserService` |
-| `class` | 클래스 분리 | `/extract class UserService` |
+| Type | Description | Example |
+|------|-------------|---------|
+| `method` | Extract method | `/extract method UserService/processUser` |
+| `interface` | Extract interface | `/extract interface UserService` |
+| `class` | Split class | `/extract class UserService` |
 
 ---
 
-## Method 추출
+## Method Extraction
 
-### 워크플로우
+### Workflow
 
-#### 1. 대상 메서드 분석
+#### 1. Analyze Target Method
 
 ```
 mcp__plugin_serena_serena__find_symbol:
@@ -45,47 +45,47 @@ mcp__plugin_serena_serena__find_symbol:
   include_body: True
 ```
 
-#### 2. 추출 대상 식별
+#### 2. Identify Extraction Target
 
 ```yaml
 AskUserQuestion:
-  question: "추출할 코드 블록을 선택하세요"
-  header: "추출 대상"
+  question: "Select code block to extract"
+  header: "Extraction Target"
   options:
-    - label: "자동 감지"
-      description: "반복/복잡 로직 자동 식별"
-    - label: "직접 지정"
-      description: "라인 범위 지정"
+    - label: "Auto-detect"
+      description: "Auto-identify repeated/complex logic"
+    - label: "Specify manually"
+      description: "Specify line range"
 ```
 
-#### 3. 새 메서드 생성
+#### 3. Create New Method
 
 ```
 mcp__plugin_serena_serena__insert_after_symbol:
   name_path: [source]
-  relative_path: [파일]
+  relative_path: [file]
   body: |
     def extracted_method(params):
-        # 추출된 로직
+        # Extracted logic
 ```
 
-#### 4. 원본 수정
+#### 4. Modify Original
 
 ```
 mcp__plugin_serena_serena__replace_content:
-  relative_path: [파일]
-  needle: "추출된 코드 패턴"
+  relative_path: [file]
+  needle: "extracted code pattern"
   repl: "self.extracted_method(args)"
   mode: "regex"
 ```
 
 ---
 
-## Interface 추출
+## Interface Extraction
 
-### 워크플로우
+### Workflow
 
-#### 1. 클래스 분석
+#### 1. Analyze Class
 
 ```
 mcp__plugin_serena_serena__find_symbol:
@@ -94,16 +94,16 @@ mcp__plugin_serena_serena__find_symbol:
   include_body: False
 ```
 
-#### 2. 공개 메서드 식별
+#### 2. Identify Public Methods
 
-Public 메서드만 인터페이스에 포함
+Only public methods included in interface
 
-#### 3. 인터페이스 생성
+#### 3. Create Interface
 
 ```
 mcp__plugin_serena_serena__insert_before_symbol:
   name_path: [source]
-  relative_path: [파일]
+  relative_path: [file]
   body: |
     interface IClassName {
         method1(param: Type): ReturnType;
@@ -111,25 +111,25 @@ mcp__plugin_serena_serena__insert_before_symbol:
     }
 ```
 
-#### 4. 클래스 수정
+#### 4. Modify Class
 
 ```
 mcp__plugin_serena_serena__replace_symbol_body:
   name_path: [source]
-  relative_path: [파일]
+  relative_path: [file]
   body: |
     class ClassName implements IClassName {
-        // 기존 구현
+        // Existing implementation
     }
 ```
 
 ---
 
-## Class 분리
+## Class Split
 
-### 워크플로우
+### Workflow
 
-#### 1. 책임 분석
+#### 1. Responsibility Analysis
 
 ```
 mcp__plugin_serena_serena__find_symbol:
@@ -138,71 +138,71 @@ mcp__plugin_serena_serena__find_symbol:
   include_body: False
 ```
 
-메서드를 책임별로 그룹화
+Group methods by responsibility
 
-#### 2. 분리 계획
+#### 2. Split Plan
 
 ```yaml
 AskUserQuestion:
-  question: "클래스 분리 방식을 선택하세요"
-  header: "분리 전략"
+  question: "Select class split approach"
+  header: "Split Strategy"
   options:
-    - label: "자동 그룹화"
-      description: "메서드 이름/의존성 기반 자동 분리"
-    - label: "직접 지정"
-      description: "분리할 메서드 그룹 지정"
+    - label: "Auto-grouping"
+      description: "Auto-split based on method names/dependencies"
+    - label: "Specify manually"
+      description: "Specify method groups to split"
 ```
 
-#### 3. 새 클래스 생성
+#### 3. Create New Class
 
 ```
 mcp__plugin_serena_serena__insert_after_symbol:
   name_path: [source]
-  relative_path: [파일]
+  relative_path: [file]
   body: |
     class ExtractedClass {
-        // 분리된 메서드들
+        // Separated methods
     }
 ```
 
-#### 4. 원본 클래스에서 위임
+#### 4. Delegate from Original Class
 
 ```
 mcp__plugin_serena_serena__replace_symbol_body:
-  # 이동된 메서드를 위임 호출로 교체
+  # Replace moved methods with delegation calls
 ```
 
 ---
 
-## 출력 형식
+## Output Format
 
 ```markdown
-## 추출 완료: [type]
+## Extraction Complete: [type]
 
-### 생성된 심볼
-- 이름: [new_symbol]
-- 파일: [file:line]
-- 타입: [method/interface/class]
+### Created Symbol
+- Name: [new_symbol]
+- File: [file:line]
+- Type: [method/interface/class]
 
-### 수정된 심볼
-- 원본: [source]
-- 변경 사항: [설명]
+### Modified Symbol
+- Original: [source]
+- Changes: [description]
 
-### 참조 업데이트
-| 파일 | 변경 내용 |
-|------|-----------|
+### Reference Updates
+| File | Change |
+|------|--------|
 | ... | ... |
 
-### 다음 단계
-- 테스트 실행: `npm test`
-- 추가 리팩토링 필요 시: `/serena-refactor:refactor`
+### Next Steps
+- Run tests: `npm test`
+- For further refactoring: `/serena-refactor:refactor`
 ```
 
 ---
 
-## 핵심 규칙
+## Core Rules
 
-1. **심볼 수준 조작** - 텍스트 치환 대신 Serena 심볼 도구
-2. **참조 자동 업데이트** - 추출 후 모든 호출처 자동 수정
-3. **원자적 변경** - 추출 작업은 한 번에 완료
-4. **롤백 가능** - Git으로 언제든 원복
+1. **Symbol-level operations** - Use Serena symbol tools instead of text replacement
+2. **Auto-update references** - Automatically fix all call sites after extraction
+3. **Atomic changes** - Complete extraction in one operation
+4. **Rollback ready** - Always restorable via Git

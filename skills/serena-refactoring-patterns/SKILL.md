@@ -1,68 +1,68 @@
 ---
-description: Serena MCP 도구를 활용한 심볼릭 리팩토링 패턴. 안전한 코드 수정, 참조 추적, 자동화된 리팩토링 워크플로우의 핵심 패턴들.
+description: Symbolic refactoring patterns using Serena MCP tools. Core patterns for safe code modification, reference tracking, and automated refactoring workflows.
 name: serena-refactoring-patterns
 ---
 # Serena Symbolic Refactoring Patterns
 
-## 핵심 원칙
+## Core Principle
 
-**심볼 수준에서 코드를 이해하고 수정하라.**
-텍스트 치환이 아닌 AST 기반 편집으로 안전성을 보장한다.
-
----
-
-## 1. 심볼 탐색 패턴
-
-### 1.1 계층적 심볼 탐색
-
-```
-1. get_symbols_overview로 파일 구조 파악 (depth=0)
-2. 관심 클래스 발견 시 depth=1로 메서드 목록 확인
-3. 특정 메서드 본문 필요 시 find_symbol + include_body=True
-```
-
-### 1.2 이름 패턴 검색
-
-| 패턴 | 의미 | 예시 |
-|------|------|------|
-| `ClassName` | 해당 이름의 모든 클래스 | `UserService` |
-| `ClassName/method` | 특정 클래스의 메서드 | `UserService/create` |
-| `/ClassName/method` | 정확한 경로 매칭 | `/UserService/create` |
-| `get*` (substring_matching=True) | 접두사 매칭 | `getValue`, `getData` |
-
-### 1.3 참조 추적
-
-```
-find_referencing_symbols 사용:
-- 리팩토링 영향 범위 파악
-- 의존성 그래프 구축
-- 순환 참조 탐지
-```
+**Understand and modify code at the symbol level.**
+Ensure safety through AST-based editing, not text replacement.
 
 ---
 
-## 2. 안전한 수정 패턴
+## 1. Symbol Navigation Patterns
 
-### 2.1 심볼 교체 (Replace Symbol Body)
+### 1.1 Hierarchical Symbol Navigation
 
-**사용 시점:**
-- 함수/메서드 전체 재작성
-- 클래스 정의 변경
-- 시그니처 포함 수정
+```
+1. get_symbols_overview to understand file structure (depth=0)
+2. When class of interest found, use depth=1 to check method list
+3. When specific method body needed, use find_symbol + include_body=True
+```
 
-**주의사항:**
-- body는 docstring/주석 미포함
-- 시그니처부터 포함해야 함
-- 들여쓰기 정확히 맞춰야 함
+### 1.2 Name Pattern Search
 
-### 2.2 콘텐츠 교체 (Replace Content)
+| Pattern | Meaning | Example |
+|---------|---------|---------|
+| `ClassName` | All classes with that name | `UserService` |
+| `ClassName/method` | Method of specific class | `UserService/create` |
+| `/ClassName/method` | Exact path matching | `/UserService/create` |
+| `get*` (substring_matching=True) | Prefix matching | `getValue`, `getData` |
 
-**사용 시점:**
-- 심볼 내부 일부 라인만 수정
-- 정규식 기반 일괄 치환
-- 여러 위치 동시 수정
+### 1.3 Reference Tracking
 
-**패턴:**
+```
+Using find_referencing_symbols:
+- Assess refactoring impact scope
+- Build dependency graph
+- Detect circular references
+```
+
+---
+
+## 2. Safe Modification Patterns
+
+### 2.1 Replace Symbol Body
+
+**When to Use:**
+- Rewriting entire function/method
+- Changing class definition
+- Modification including signature
+
+**Cautions:**
+- body excludes docstring/comments
+- Must include signature
+- Indentation must be exact
+
+### 2.2 Replace Content
+
+**When to Use:**
+- Modifying only some lines within a symbol
+- Regex-based bulk replacement
+- Simultaneous modification of multiple locations
+
+**Pattern:**
 ```
 mode: "regex"
 needle: "old_pattern.*?end_marker"
@@ -70,125 +70,125 @@ repl: "new_content"
 allow_multiple_occurrences: True/False
 ```
 
-### 2.3 삽입 패턴
+### 2.3 Insertion Patterns
 
-| 도구 | 용도 |
-|------|------|
-| `insert_before_symbol` | import 추가, 데코레이터 추가 |
-| `insert_after_symbol` | 새 메서드/클래스 추가 |
+| Tool | Use Case |
+|------|----------|
+| `insert_before_symbol` | Adding imports, adding decorators |
+| `insert_after_symbol` | Adding new methods/classes |
 
 ---
 
-## 3. 리팩토링 워크플로우
+## 3. Refactoring Workflows
 
 ### 3.1 Extract Method
 
 ```
-1. find_symbol로 대상 메서드 본문 읽기
-2. 추출할 코드 블록 식별
-3. 새 메서드 시그니처 설계
-4. insert_after_symbol로 새 메서드 추가
-5. replace_content로 원본에서 호출로 교체
-6. find_referencing_symbols로 영향 확인
+1. Read target method body with find_symbol
+2. Identify code block to extract
+3. Design new method signature
+4. Add new method with insert_after_symbol
+5. Replace original with call using replace_content
+6. Verify impact with find_referencing_symbols
 ```
 
 ### 3.2 Rename Symbol
 
 ```
-1. find_referencing_symbols로 모든 사용처 파악
-2. rename_symbol로 코드베이스 전체 이름 변경
-3. 결과 검증 (자동으로 모든 참조 업데이트)
+1. Identify all usages with find_referencing_symbols
+2. Rename across entire codebase with rename_symbol
+3. Verify results (all references updated automatically)
 ```
 
 ### 3.3 Extract Interface
 
 ```
-1. find_symbol + depth=1로 클래스 메서드 목록
-2. 공통 메서드 식별
-3. 새 인터페이스 정의 작성
-4. insert_before_symbol로 인터페이스 추가
-5. replace_symbol_body로 클래스가 인터페이스 구현하도록 수정
+1. Get class method list with find_symbol + depth=1
+2. Identify common methods
+3. Write new interface definition
+4. Add interface with insert_before_symbol
+5. Modify class to implement interface with replace_symbol_body
 ```
 
 ### 3.4 Move Method
 
 ```
-1. find_symbol로 원본 메서드 읽기 (include_body=True)
-2. 대상 클래스에 insert_after_symbol로 메서드 추가
-3. find_referencing_symbols로 모든 호출처 파악
-4. replace_content로 호출처 업데이트
-5. 원본 메서드 삭제 (replace_symbol_body with empty or remove)
+1. Read original method with find_symbol (include_body=True)
+2. Add method to target class with insert_after_symbol
+3. Identify all call sites with find_referencing_symbols
+4. Update call sites with replace_content
+5. Delete original method (replace_symbol_body with empty or remove)
 ```
 
 ---
 
-## 4. SOLID 위반 자동 수정
+## 4. SOLID Violation Auto-fix
 
-### 4.1 SRP 위반 → 클래스 분리
-
-```
-탐지: 클래스에 메서드 10개 초과
-수정:
-1. get_symbols_overview로 메서드 그룹화
-2. 책임별 새 클래스 생성
-3. 메서드 이동 패턴 적용
-4. 원본 클래스에서 새 클래스 위임
-```
-
-### 4.2 DIP 위반 → 인터페이스 추출
+### 4.1 SRP Violation → Class Split
 
 ```
-탐지: 비즈니스 로직에 직접 인프라 의존
-수정:
-1. find_referencing_symbols로 의존 관계 파악
-2. 인터페이스 추출 패턴 적용
-3. 생성자 주입으로 변경
+Detection: Class has more than 10 methods
+Fix:
+1. Group methods with get_symbols_overview
+2. Create new classes by responsibility
+3. Apply move method pattern
+4. Delegate from original class to new classes
 ```
 
-### 4.3 OCP 위반 → 전략 패턴
+### 4.2 DIP Violation → Extract Interface
 
 ```
-탐지: 타입 기반 switch/if 체인
-수정:
-1. search_for_pattern으로 switch 문 탐지
-2. 각 case를 전략 클래스로 추출
-3. 팩토리/레지스트리 패턴 적용
+Detection: Business logic directly depends on infrastructure
+Fix:
+1. Map dependencies with find_referencing_symbols
+2. Apply extract interface pattern
+3. Change to constructor injection
+```
+
+### 4.3 OCP Violation → Strategy Pattern
+
+```
+Detection: Type-based switch/if chains
+Fix:
+1. Detect switch statements with search_for_pattern
+2. Extract each case to strategy class
+3. Apply factory/registry pattern
 ```
 
 ---
 
-## 5. 검증 패턴
+## 5. Verification Patterns
 
-### 5.1 수정 전 체크리스트
+### 5.1 Pre-modification Checklist
 
-- [ ] find_symbol로 대상 심볼 존재 확인
-- [ ] find_referencing_symbols로 영향 범위 파악
-- [ ] 테스트 파일 존재 확인
+- [ ] Verify target symbol exists with find_symbol
+- [ ] Assess impact scope with find_referencing_symbols
+- [ ] Verify test file exists
 
-### 5.2 수정 후 검증
+### 5.2 Post-modification Verification
 
-- [ ] 심볼 도구는 오류 없으면 신뢰 가능
-- [ ] find_referencing_symbols로 참조 무결성 확인
-- [ ] execute_shell_command로 테스트 실행
+- [ ] Symbol tools are reliable if no errors
+- [ ] Verify reference integrity with find_referencing_symbols
+- [ ] Run tests with execute_shell_command
 
 ---
 
-## 6. 메모리 활용
+## 6. Memory Utilization
 
-### 프로젝트 컨텍스트 저장
+### Saving Project Context
 
 ```
 write_memory:
-- 아키텍처 결정 기록
-- 리팩토링 히스토리
-- 코딩 컨벤션
+- Architecture decision records
+- Refactoring history
+- Coding conventions
 ```
 
-### 세션 간 연속성
+### Cross-session Continuity
 
 ```
 read_memory:
-- 이전 리팩토링 진행 상황
-- 알려진 기술 부채
-- 우선순위 높은 수정 대상
+- Previous refactoring progress
+- Known technical debt
+- High-priority fix targets
 ```

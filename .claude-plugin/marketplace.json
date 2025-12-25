@@ -4,14 +4,14 @@
     "name": "chanhokim"
   },
   "metadata": {
-    "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인 마켓플레이스",
-    "version": "1.0.0"
+    "description": "Serena MCP-based symbolic refactoring plugin marketplace. Supports context-isolated Serena Gateway, duplicate detection, and strict quality gates.",
+    "version": "2.1.0"
   },
   "plugins": [
     {
       "name": "serena-refactor",
-      "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인. SOLID 분석, 자동 수정, 참조 추적, 안전한 리네이밍을 지원합니다.",
-      "version": "1.0.0",
+      "description": "Serena MCP-based symbolic refactoring plugin. Supports SOLID analysis, duplicate detection, auto-fix, reference tracking, and safe renaming. Provides context isolation via Serena Gateway and hook-based quality gates.",
+      "version": "2.1.0",
       "source": "./",
       "license": "MIT",
       "tags": [
@@ -21,25 +21,31 @@
         "solid",
         "code-quality",
         "mcp",
-        "semantic-analysis"
+        "semantic-analysis",
+        "duplicate-detection",
+        "quality-gate"
       ],
       "skills": [
         "./skills/solid-design-rules",
-        "./skills/serena-refactoring-patterns"
+        "./skills/serena-refactoring-patterns",
+        "./skills/duplicate-detection-rules"
       ],
       "commands": [
         "./commands/analyze.md",
         "./commands/audit.md",
+        "./commands/detect-duplicates.md",
         "./commands/extract.md",
         "./commands/plan.md",
         "./commands/refactor.md",
         "./commands/rename.md"
       ],
       "agents": [
+        "./agents/serena-gateway.md",
         "./agents/serena-solid-analyzer.md",
         "./agents/serena-refactor-executor.md",
         "./agents/refactor-planner.md",
-        "./agents/refactor-auditor.md"
+        "./agents/refactor-auditor.md",
+        "./agents/duplicate-detector.md"
       ],
       "hooks": [
         "./hooks/hooks.json"

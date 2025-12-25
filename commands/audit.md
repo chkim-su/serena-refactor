@@ -1,5 +1,5 @@
 ---
-description: 빠른 코드 품질 감사. 리팩토링 전후 품질을 검증합니다.
+description: Quick code quality audit. Verifies code quality before and after refactoring.
 allowed-tools:
   - Task
   - Read
@@ -13,53 +13,53 @@ allowed-tools:
 
 # Audit Command
 
-리팩토링 품질 감사.
+Refactoring quality audit.
 
-## 사용법
+## Usage
 
 ```
 /serena-refactor:audit [target]
 ```
 
-## 워크플로우
+## Workflow
 
-### Step 1: 대상 확인
+### Step 1: Identify Target
 
-대상이 제공되지 않은 경우:
-- Git으로 변경된 파일 자동 감지
+If no target provided:
+- Auto-detect changed files via Git
 - `git diff --name-only HEAD~1`
 
-### Step 2: 감사 실행
+### Step 2: Run Audit
 
 ```
 Task:
   agent: refactor-auditor
   prompt: |
-    [target] 대상으로 코드 품질 감사를 수행하세요.
+    Perform code quality audit on [target].
 
-    체크 항목:
-    1. 불완전 패턴 (TODO, FIXME)
-    2. 참조 무결성
-    3. 빈 구현체
-    4. SOLID 위반
-    5. 테스트 통과
+    Check items:
+    1. Incomplete patterns (TODO, FIXME)
+    2. Reference integrity
+    3. Empty implementations
+    4. SOLID violations
+    5. Test passing
 ```
 
-### Step 3: 결과 출력
+### Step 3: Output Results
 
 ```markdown
-## 감사 결과
+## Audit Results
 
-### 빠른 상태
-| 항목 | 상태 |
-|------|------|
-| 불완전 패턴 | ✓/✗ |
-| 참조 무결성 | ✓/✗ |
-| 테스트 | ✓/✗ |
+### Quick Status
+| Item | Status |
+|------|--------|
+| Incomplete patterns | ✓/✗ |
+| Reference integrity | ✓/✗ |
+| Tests | ✓/✗ |
 
 ### VERDICT: PASS/FAIL
 
-### FAIL 시 조치 사항
-1. [수정 필요 항목]
+### On FAIL - Required Actions
+1. [Item to fix]
 ...
 ```

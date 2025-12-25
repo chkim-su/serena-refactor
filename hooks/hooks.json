@@ -1,52 +1,17 @@
 {
-  "description": "Serena 리팩토링 플러그인 훅 - 품질 게이트와 Serena MCP 통합 강화",
+  "description": "Serena Refactoring Plugin Hooks - Workflow Enforcement and Quality Gates",
   "hooks": {
     "PreToolUse": [
       {
         "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__replace_symbol_body"
+          "tool_name": "Task",
+          "input_contains": ["serena-gateway", "type: MODIFY"]
         },
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🔧 Serena 심볼 교체 실행 중... 참조 무결성이 자동으로 유지됩니다.'",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__rename_symbol"
-        },
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '🔄 Serena 심볼 이름 변경 실행 중... 모든 참조가 자동으로 업데이트됩니다.'",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__insert_after_symbol"
-        },
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '➕ Serena 심볼 삽입 실행 중...'",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__insert_before_symbol"
-        },
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '➕ Serena 심볼 삽입 실행 중...'",
-            "timeout": 5000
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔒 MODIFICATION GATE - Modification Request Detected' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ -f .refactor-plan-approved ]; then echo '  ✓ Plan approved'; else echo '  ⚠️  Plan not approved - Run /serena-refactor:plan first'; fi && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null && echo '  ✓ Working directory clean' || echo '  ⚠️  WARNING: Uncommitted changes - Backup recommended!') || echo '  ℹ️  Not a Git repository'",
+            "timeout": 10000
           }
         ]
       },
@@ -58,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || echo '⚠️  커밋되지 않은 변경사항이 있습니다. 리팩토링 전 백업을 권장합니다.') || true",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔧 REFACTOR EXECUTOR - Workflow Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && BLOCKED=0 && if [ ! -f .refactor-analysis-done ]; then echo '  ❌ BLOCKED: Analysis not completed'; echo '     → Run /serena-refactor:analyze first'; BLOCKED=1; else echo '  ✓ Analysis completed'; fi && if [ ! -f .refactor-plan-approved ]; then echo '  ❌ BLOCKED: Plan not approved'; echo '     → Run /serena-refactor:plan and approve'; BLOCKED=1; else echo '  ✓ Plan approved'; fi && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null && echo '  ✓ Git clean' || echo '  ⚠️  Uncommitted changes - git stash recommended') && echo '' && if [ $BLOCKED -eq 1 ]; then echo '  🚫 Execution blocked due to workflow violation.' && echo '════════════════════════════════════════════════════════════' && exit 1; else echo '  ✓ All conditions met - Execution allowed' && echo '════════════════════════════════════════════════════════════'; fi",
             "timeout": 10000
           }
         ]
@@ -71,7 +36,46 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🔍 리팩토링 품질 감사 시작...'",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔍 AUDIT GATE - Pre-Audit Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ ! -f .refactor-execution-done ]; then echo '  ⚠️  No refactoring execution record'; echo '     Audit will proceed, but verify changes exist.'; else echo '  ✓ Refactoring execution confirmed'; fi && echo '' && echo '  Audit items:' && echo '  • Incomplete patterns (TODO/FIXME)' && echo '  • Reference integrity' && echo '  • SOLID improvement' && echo '  • Test passing' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["refactor-planner"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  📋 PLAN GATE - Pre-Planning Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ ! -f .refactor-analysis-done ]; then echo '  ⚠️  WARNING: Planning without analysis'; echo '     → Recommended: Run /serena-refactor:analyze first'; else echo '  ✓ Analysis confirmed'; fi && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["duplicate-detector"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔎 DUPLICATE DETECTION - Starting Detection' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Detection targets:' && echo '  • Clone code (Type 1-3)' && echo '  • Role duplication (similar classes/functions)' && echo '  • Variable/constant duplication' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["serena-solid-analyzer"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  📊 SOLID ANALYSIS - Starting Analysis' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Analysis items:' && echo '  • SRP (Single Responsibility)' && echo '  • OCP (Open-Closed)' && echo '  • LSP (Liskov Substitution)' && echo '  • ISP (Interface Segregation)' && echo '  • DIP (Dependency Inversion)' && echo '════════════════════════════════════════════════════════════'",
             "timeout": 5000
           }
         ]
@@ -86,7 +90,46 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ SOLID 분석 완료' && echo '' && echo '  다음 단계:' && echo '  → /serena-refactor:plan - 리팩토링 계획 수립' && echo '  → /serena-refactor:refactor - 전체 리팩토링 실행' && echo '════════════════════════════════════════════════════════════'",
+            "command": "touch .refactor-analysis-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ SOLID Analysis Complete - State Saved' && echo '' && echo '  [.refactor-analysis-done] created' && echo '' && echo '  Next steps:' && echo '  → /serena-refactor:plan - Create refactoring plan' && echo '  → /serena-refactor:detect-duplicates - Detect duplicates' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["refactor-planner"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch .refactor-plan-approved && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Refactoring Plan Created' && echo '' && echo '  [.refactor-plan-approved] created' && echo '  → Plan auto-approved.' && echo '  → If issues found, run: rm .refactor-plan-approved' && echo '' && echo '  Next steps:' && echo '  → /serena-refactor:refactor - Execute plan' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["duplicate-detector"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch .refactor-analysis-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Duplicate Detection Complete - State Saved' && echo '' && echo '  [.refactor-analysis-done] updated' && echo '' && echo '  Next steps:' && echo '  → Review detected duplicates' && echo '  → /serena-refactor:plan - Create consolidation plan' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["serena-refactor-executor"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch .refactor-execution-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Refactoring Execution Complete' && echo '' && echo '  [.refactor-execution-done] created' && echo '' && echo '  ⚠️  Required: Run quality verification' && echo '  → /serena-refactor:audit' && echo '' && echo '  🚫 No commits until verification passes!' && echo '════════════════════════════════════════════════════════════'",
             "timeout": 5000
           }
         ]
@@ -100,7 +143,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✅ 감사 통과' && echo '' && echo '  리팩토링 품질이 검증되었습니다.' && echo '  git commit으로 변경사항을 저장할 수 있습니다.' && echo '════════════════════════════════════════════════════════════'",
+            "command": "touch .refactor-audit-passed && rm -f .refactor-analysis-done .refactor-plan-approved .refactor-execution-done 2>/dev/null && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✅ Audit Passed - QUALITY GATE PASSED' && echo '' && echo '  State files cleaned:' && echo '  ✓ .refactor-audit-passed created' && echo '  ✓ Workflow state files deleted' && echo '' && echo '  Refactoring completed successfully!' && echo '' && echo '  Next steps:' && echo '  → git add -A && git commit -m \"refactor: [description]\"' && echo '  → rm .refactor-audit-passed (after commit)' && echo '════════════════════════════════════════════════════════════'",
             "timeout": 5000
           }
         ]
@@ -114,31 +157,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ❌ 감사 실패' && echo '' && echo '  발견된 문제를 수정해야 합니다:' && echo '  - TODO/FIXME 제거' && echo '  - 빈 구현체 완성' && echo '  - 참조 무결성 확인' && echo '' && echo '  수정 후 /serena-refactor:audit로 재검증하세요.' && echo '════════════════════════════════════════════════════════════'",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__rename_symbol"
-        },
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '✓ 심볼 이름 변경 완료 - 모든 참조가 업데이트되었습니다.'",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": {
-          "tool_name": "mcp__plugin_serena_serena__replace_symbol_body"
-        },
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '✓ 심볼 본문 교체 완료'",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ❌ Audit Failed - QUALITY GATE BLOCKED' && echo '' && echo '  Status: Workflow state preserved' && echo '  → .refactor-execution-done remains' && echo '' && echo '  Issues must be fixed:' && echo '  • Remove TODO/FIXME' && echo '  • Complete empty implementations' && echo '  • Verify reference integrity' && echo '  • Ensure tests pass' && echo '' && echo '  Run /serena-refactor:audit again after fixes.' && echo '════════════════════════════════════════════════════════════'",
             "timeout": 5000
           }
         ]
@@ -146,12 +165,12 @@
       {
         "matcher": {
           "tool_name": "Task",
-          "input_contains": ["serena-refactor-executor"]
+          "input_contains": ["serena-gateway", "type: MODIFY"]
         },
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ 리팩토링 단계 완료' && echo '' && echo '  품질 검증을 위해 /serena-refactor:audit를 실행하세요.' && echo '════════════════════════════════════════════════════════════'",
+            "command": "echo '' && echo '  ✓ Serena modification complete' && echo '  ℹ️  Reference integrity auto-maintained by Serena Gateway'",
             "timeout": 5000
           }
         ]
@@ -162,7 +181,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || echo '💡 팁: 커밋되지 않은 리팩토링 변경사항이 있습니다. git commit으로 저장하거나 git checkout -- .으로 롤백할 수 있습니다.') || true",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 Session Ending - Status Check' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ -f .refactor-analysis-done ] || [ -f .refactor-plan-approved ] || [ -f .refactor-execution-done ]; then echo '  ⚠️  In-progress refactoring workflow:' && ls -la .refactor-* 2>/dev/null | awk '{print \"    \" $NF}' && echo '' && echo '  Keep state files to continue in next session' && echo '  To cancel: rm .refactor-*'; else echo '  ✓ No workflow in progress'; fi && echo '' && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || (echo '  ⚠️  Uncommitted changes:' && echo '  → Save: git commit -m \"refactor: ...\"' && echo '  → Rollback: git checkout -- .' && echo '' && if [ ! -f .refactor-audit-passed ]; then echo '  🚫 No commits without verification!' && echo '  → Run /serena-refactor:audit first'; fi)) && echo '════════════════════════════════════════════════════════════' || true",
             "timeout": 10000
           }
         ]

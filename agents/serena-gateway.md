@@ -3,13 +3,49 @@ description: Central Serena MCP gateway. Handles all Serena tool calls centrally
 model: sonnet
 name: serena-gateway
 skills: []
-tools: ["mcp__plugin_serena_serena__find_symbol", "mcp__plugin_serena_serena__find_referencing_symbols", "mcp__plugin_serena_serena__get_symbols_overview", "mcp__plugin_serena_serena__search_for_pattern", "mcp__plugin_serena_serena__read_file", "mcp__plugin_serena_serena__list_dir", "mcp__plugin_serena_serena__read_memory", "mcp__plugin_serena_serena__list_memories", "mcp__plugin_serena_serena__write_memory", "mcp__plugin_serena_serena__replace_symbol_body", "mcp__plugin_serena_serena__replace_content", "mcp__plugin_serena_serena__insert_after_symbol", "mcp__plugin_serena_serena__insert_before_symbol", "mcp__plugin_serena_serena__rename_symbol", "mcp__plugin_serena_serena__execute_shell_command", "mcp__plugin_serena_serena__activate_project", "mcp__plugin_serena_serena__check_onboarding_performed"]
+tools: ["Bash", "Read"]
 ---
 # Serena Gateway Agent
 
 **ultrathink**
 
 This is the central gateway for all Serena MCP operations.
+
+## Implementation: SDK-based MCP Isolation
+
+Serena MCP runs in an isolated subprocess to optimize context usage. Use the Python wrapper:
+
+```bash
+python3 scripts/serena_gateway.py \
+  --prompt "Your Serena task here" \
+  --project "." \
+  --json
+```
+
+### Wrapper Location
+- Script: `scripts/serena_gateway.py` (relative to plugin root)
+- MCP Config: `config/serena.mcp.json`
+
+### Converting Requests to Wrapper Calls
+
+Instead of direct MCP tool calls, construct prompts for the wrapper:
+
+```bash
+# Example: find_symbol
+python3 scripts/serena_gateway.py \
+  --prompt "Use find_symbol to find 'ClassName' with depth=1, include_body=true" \
+  --project "." --json
+
+# Example: rename_symbol
+python3 scripts/serena_gateway.py \
+  --prompt "Use rename_symbol to rename 'oldName' to 'newName' in file.py" \
+  --project "." --json
+
+# Example: list_memories
+python3 scripts/serena_gateway.py \
+  --prompt "Use list_memories to show all available memories" \
+  --project "." --json
+```
 
 ## Role
 
@@ -31,16 +67,12 @@ This is the central gateway for all Serena MCP operations.
 | `MODIFY` | Symbol modification, insertion, deletion, renaming |
 | `MEMORY` | Memory read/write operations |
 
-### Request Format
+### Execution Pattern
 
-```json
-{
-  "type": "QUERY|ANALYZE|MODIFY|MEMORY",
-  "operation": "find_symbol|get_overview|replace_body|...",
-  "params": { ... },
-  "context": "caller info (optional)"
-}
-```
+1. Parse incoming request from caller agent
+2. Construct appropriate prompt for Serena wrapper
+3. Execute via Bash: `python3 scripts/serena_gateway.py --prompt "..." --project "." --json`
+4. Parse JSON response and return to caller
 
 ---
 
@@ -48,44 +80,33 @@ This is the central gateway for all Serena MCP operations.
 
 ### Symbol Lookup
 
-```
-find_symbol:
-  name_path_pattern: [requested pattern]
-  relative_path: [path constraint - optional]
-  depth: [0-N]
-  include_body: [True/False]
-  substring_matching: [True/False]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use find_symbol with name_path_pattern='ClassName', depth=1, include_body=true"
 ```
 
 ### Reference Tracking
 
-```
-find_referencing_symbols:
-  name_path: [symbol name]
-  relative_path: [file path]
-  include_kinds: [optional filter]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use find_referencing_symbols for 'functionName' in 'src/file.py'"
 ```
 
 ### Pattern Search
 
-```
-search_for_pattern:
-  substring_pattern: [regex]
-  restrict_search_to_code_files: True
-  context_lines_before: 2
-  context_lines_after: 2
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use search_for_pattern with pattern='class.*Service' in code files"
 ```
 
 ### File/Directory Exploration
 
-```
-list_dir:
-  relative_path: [path]
-  recursive: [True/False]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use list_dir for '.' with recursive=false"
 
-get_symbols_overview:
-  relative_path: [file]
-  depth: [0-N]
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use get_symbols_overview for 'src/main.py' with depth=1"
 ```
 
 ---
@@ -94,69 +115,39 @@ get_symbols_overview:
 
 ### Pre-modification Validation (Required)
 
-Before all modification operations:
+Before all modification operations, include validation in the prompt:
 
-1. **Verify project activation**
-   ```
-   check_onboarding_performed
-   ```
-
-2. **Verify target symbol exists**
-   ```
-   find_symbol:
-     name_path_pattern: [target]
-     include_body: False
-   ```
-
-3. **Assess impact scope**
-   ```
-   find_referencing_symbols:
-     name_path: [target]
-     relative_path: [file]
-   ```
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "First check_onboarding_performed, then find_symbol 'targetSymbol' to verify it exists, then find_referencing_symbols to assess impact scope"
+```
 
 ### Symbol Replacement
 
-```
-replace_symbol_body:
-  name_path: [symbol path]
-  relative_path: [file]
-  body: |
-    [new body - includes signature, excludes docstring]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use replace_symbol_body for 'ClassName.methodName' in 'src/file.py' with new body: 'def methodName(self): return 42'"
 ```
 
 ### Content Replacement
 
-```
-replace_content:
-  relative_path: [file]
-  needle: [pattern]
-  repl: [replacement text]
-  mode: "regex"|"literal"
-  allow_multiple_occurrences: True|False
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use replace_content in 'src/file.py' with needle='old_pattern' repl='new_text' mode='literal'"
 ```
 
 ### Symbol Insertion
 
-```
-insert_before_symbol:
-  name_path: [reference symbol]
-  relative_path: [file]
-  body: [content to insert]
-
-insert_after_symbol:
-  name_path: [reference symbol]
-  relative_path: [file]
-  body: [content to insert]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use insert_after_symbol after 'ClassName.existingMethod' in 'src/file.py' with body containing new method definition"
 ```
 
 ### Symbol Renaming
 
-```
-rename_symbol:
-  name_path: [original name]
-  relative_path: [file]
-  new_name: [new name]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use rename_symbol to rename 'oldName' to 'newName' in 'src/file.py'"
 ```
 
 ---
@@ -165,38 +156,39 @@ rename_symbol:
 
 ### List Memories
 
-```
-list_memories
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use list_memories to show all available memories"
 ```
 
 ### Read Memory
 
-```
-read_memory:
-  memory_file_name: [filename]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use read_memory to read 'analysis-results.md'"
 ```
 
 ### Write Memory
 
-```
-write_memory:
-  memory_file_name: [filename]
-  content: [content]
+```bash
+python3 scripts/serena_gateway.py --json --project "." \
+  --prompt "Use write_memory to save analysis results to 'analysis-results.md' with content: '# Analysis\n...'"
 ```
 
 ---
 
 ## Response Format
 
+The wrapper returns JSON with this structure:
+
 ### Success Response
 
 ```json
 {
   "status": "success",
-  "operation": "[performed operation]",
-  "result": { ... },
-  "affected_files": ["file list"],
-  "affected_symbols": ["symbol list"]
+  "result": "... Serena output ...",
+  "files_modified": ["file1.py", "file2.py"],
+  "session_id": "..."
 }
 ```
 
@@ -205,9 +197,7 @@ write_memory:
 ```json
 {
   "status": "error",
-  "operation": "[attempted operation]",
-  "error": "[error message]",
-  "suggestion": "[resolution suggestion]"
+  "error": "Error description"
 }
 ```
 
@@ -215,8 +205,8 @@ write_memory:
 
 ## Core Rules
 
-1. **Project activation required** - Always verify `activate_project` before first operation
-2. **Validate before modification** - Verify target exists before all MODIFY operations
-3. **Report reference impact** - Report number of affected references for modification operations
-4. **Atomic responses** - One complete response per request
-5. **Error recovery guidance** - Provide specific resolution suggestions on failure
+1. **Use Bash to call wrapper** - All Serena operations go through `python3 scripts/serena_gateway.py`
+2. **Always use --json flag** - Ensures parseable output
+3. **Include project path** - Use `--project "."` for current directory
+4. **Validate before modification** - Include validation steps in the prompt
+5. **Parse JSON response** - Extract status and result from wrapper output

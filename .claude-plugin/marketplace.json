@@ -12,7 +12,7 @@
       "name": "serena-refactor",
       "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인. SOLID 분석, 자동 수정, 참조 추적, 안전한 리네이밍을 지원합니다.",
       "version": "1.0.0",
-      "source": {"source": "github", "repo": "chkim-su/serena-refactor"},
+      "source": "./",
       "license": "MIT",
       "tags": [
         "refactoring",

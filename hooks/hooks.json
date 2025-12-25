@@ -1,0 +1,172 @@
+{
+  "description": "Serena 리팩토링 플러그인 훅 - 품질 게이트와 Serena MCP 통합 강화",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__replace_symbol_body"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🔧 Serena 심볼 교체 실행 중... 참조 무결성이 자동으로 유지됩니다.'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__rename_symbol"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🔄 Serena 심볼 이름 변경 실행 중... 모든 참조가 자동으로 업데이트됩니다.'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__insert_after_symbol"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '➕ Serena 심볼 삽입 실행 중...'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__insert_before_symbol"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '➕ Serena 심볼 삽입 실행 중...'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["serena-refactor-executor"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || echo '⚠️  커밋되지 않은 변경사항이 있습니다. 리팩토링 전 백업을 권장합니다.') || true",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["refactor-auditor"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🔍 리팩토링 품질 감사 시작...'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["serena-solid-analyzer"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ SOLID 분석 완료' && echo '' && echo '  다음 단계:' && echo '  → /serena-refactor:plan - 리팩토링 계획 수립' && echo '  → /serena-refactor:refactor - 전체 리팩토링 실행' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["refactor-auditor"],
+          "output_contains": ["VERDICT: PASS", "FINAL VERDICT: PASS"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✅ 감사 통과' && echo '' && echo '  리팩토링 품질이 검증되었습니다.' && echo '  git commit으로 변경사항을 저장할 수 있습니다.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["refactor-auditor"],
+          "output_contains": ["VERDICT: FAIL", "FINAL VERDICT: FAIL"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ❌ 감사 실패' && echo '' && echo '  발견된 문제를 수정해야 합니다:' && echo '  - TODO/FIXME 제거' && echo '  - 빈 구현체 완성' && echo '  - 참조 무결성 확인' && echo '' && echo '  수정 후 /serena-refactor:audit로 재검증하세요.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__rename_symbol"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✓ 심볼 이름 변경 완료 - 모든 참조가 업데이트되었습니다.'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "mcp__plugin_serena_serena__replace_symbol_body"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✓ 심볼 본문 교체 완료'",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tool_name": "Task",
+          "input_contains": ["serena-refactor-executor"]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ 리팩토링 단계 완료' && echo '' && echo '  품질 검증을 위해 /serena-refactor:audit를 실행하세요.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || echo '💡 팁: 커밋되지 않은 리팩토링 변경사항이 있습니다. git commit으로 저장하거나 git checkout -- .으로 롤백할 수 있습니다.') || true",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

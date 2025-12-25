@@ -1,0 +1,49 @@
+{
+  "name": "serena-refactor-marketplace",
+  "owner": {
+    "name": "chanhokim"
+  },
+  "metadata": {
+    "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인 마켓플레이스",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "serena-refactor",
+      "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인. SOLID 분석, 자동 수정, 참조 추적, 안전한 리네이밍을 지원합니다.",
+      "version": "1.0.0",
+      "source": {"source": "github", "repo": "chkim-su/serena-refactor"},
+      "license": "MIT",
+      "tags": [
+        "refactoring",
+        "serena",
+        "symbolic",
+        "solid",
+        "code-quality",
+        "mcp",
+        "semantic-analysis"
+      ],
+      "skills": [
+        "./skills/solid-design-rules",
+        "./skills/serena-refactoring-patterns"
+      ],
+      "commands": [
+        "./commands/analyze.md",
+        "./commands/audit.md",
+        "./commands/extract.md",
+        "./commands/plan.md",
+        "./commands/refactor.md",
+        "./commands/rename.md"
+      ],
+      "agents": [
+        "./agents/serena-solid-analyzer.md",
+        "./agents/serena-refactor-executor.md",
+        "./agents/refactor-planner.md",
+        "./agents/refactor-auditor.md"
+      ],
+      "hooks": [
+        "./hooks/hooks.json"
+      ]
+    }
+  ]
+}

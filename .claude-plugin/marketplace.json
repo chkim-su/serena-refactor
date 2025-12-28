@@ -13,6 +13,9 @@
       "description": "Serena MCP-based symbolic refactoring plugin. Supports SOLID analysis, duplicate detection, auto-fix, reference tracking, safe renaming, and intelligent feature injection with project knowledge graphs. Provides context isolation via Serena Gateway and hook-based quality gates.",
       "version": "2.3.0",
       "source": "./",
+      "author": {
+        "name": "chanhokim"
+      },
       "license": "MIT",
       "tags": [
         "refactoring",

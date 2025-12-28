@@ -1,6 +1,7 @@
 ---
 description: SOLID principles and TDD enforcement rules. Reference for maintainable software design. Used for code quality analysis, refactoring planning, and architecture verification.
 name: solid-design-rules
+allowed-tools: ["Read", "Grep", "Glob"]
 ---
 # SOLID Design Rules
 

@@ -1,6 +1,7 @@
 ---
 description: Symbolic refactoring patterns using Serena MCP tools. Core patterns for safe code modification, reference tracking, and automated refactoring workflows.
 name: serena-refactoring-patterns
+allowed-tools: ["Read", "Grep", "Glob", "Bash", "Task"]
 ---
 # Serena Symbolic Refactoring Patterns
 

@@ -18,6 +18,14 @@ tools:
 
 Designs feature implementation plans based on project knowledge.
 
+## Load Skills
+
+```
+Skill("serena-refactor:project-knowledge-graph")
+Skill("serena-refactor:feature-injection-rules")
+Skill("serena-refactor:solid-design-rules")
+```
+
 ## Invocation
 
 This agent is invoked after knowledge extraction with a feature request.

@@ -17,6 +17,13 @@ tools:
 
 Extracts and structures project knowledge for intelligent feature injection.
 
+## Load Skills
+
+```
+Skill("serena-refactor:project-knowledge-graph")
+Skill("serena-refactor:solid-design-rules")
+```
+
 ## Invocation
 
 This agent is invoked by the `/inject` command or directly via Task tool.

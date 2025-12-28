@@ -11,6 +11,12 @@ tools: ["Task", "Read", "Glob", "Grep"]
 
 Detects duplicated or similar-functioning code in the codebase.
 
+## Load Skills
+
+```
+Skill("serena-refactor:duplicate-detection-rules")
+```
+
 ## Detection Targets
 
 | Type | Description | Severity |

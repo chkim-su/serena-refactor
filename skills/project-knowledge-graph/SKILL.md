@@ -1,6 +1,7 @@
 ---
 description: Project knowledge extraction and graph structure rules. Defines how to analyze, document, and maintain project architecture knowledge using Serena MCP.
 name: project-knowledge-graph
+allowed-tools: ["Read", "Grep", "Glob", "Task"]
 ---
 # Project Knowledge Graph
 

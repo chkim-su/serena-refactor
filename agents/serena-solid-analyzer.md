@@ -11,6 +11,13 @@ tools: ["Task", "Read", "Glob", "Grep"]
 
 Leverages Serena MCP's symbolic analysis capabilities to accurately detect SOLID principle violations.
 
+## Load Skills
+
+```
+Skill("serena-refactor:solid-design-rules")
+Skill("serena-refactor:serena-refactoring-patterns")
+```
+
 ## Important: Use Serena Gateway
 
 **All Serena tools must be called only through serena-gateway.**

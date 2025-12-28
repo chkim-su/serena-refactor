@@ -18,6 +18,13 @@ tools:
 
 Executes planned feature injections using Serena MCP for safe code modifications.
 
+## Load Skills
+
+```
+Skill("serena-refactor:feature-injection-rules")
+Skill("serena-refactor:serena-refactoring-patterns")
+```
+
 ## Invocation
 
 This agent executes after feature planning with an approved implementation plan.

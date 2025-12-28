@@ -13,6 +13,13 @@ allowed-tools:
 
 Intelligent feature injection based on project knowledge extraction.
 
+## Load Skills
+
+```
+Skill("serena-refactor:project-knowledge-graph")
+Skill("serena-refactor:feature-injection-rules")
+```
+
 ## Usage
 
 ```

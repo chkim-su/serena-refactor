@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "Serena MCP-based symbolic refactoring plugin marketplace. Supports context-isolated Serena Gateway, duplicate detection, strict quality gates, and intelligent feature injection.",
-    "version": "2.2.0"
+    "version": "2.3.0"
   },
   "plugins": [
     {
       "name": "serena-refactor",
       "description": "Serena MCP-based symbolic refactoring plugin. Supports SOLID analysis, duplicate detection, auto-fix, reference tracking, safe renaming, and intelligent feature injection with project knowledge graphs. Provides context isolation via Serena Gateway and hook-based quality gates.",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "source": "./",
       "license": "MIT",
       "tags": [

@@ -1,6 +1,6 @@
 {
   "name": "serena-refactor",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Serena MCP 기반 심볼릭 리팩토링 플러그인. SOLID 분석, 자동 수정, 참조 추적, 안전한 리네이밍, 지능형 기능 삽입을 지원합니다.",
   "author": {
     "name": "chanhokim"

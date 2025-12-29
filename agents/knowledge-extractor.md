@@ -5,11 +5,7 @@ name: knowledge-extractor
 skills:
   - project-knowledge-graph
   - solid-design-rules
-tools:
-  - Task
-  - Read
-  - Glob
-  - Grep
+tools: []
 ---
 # Knowledge Extractor Agent
 
@@ -43,7 +39,7 @@ Request:
 
 1. **Get Directory Structure**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use list_dir for '.' with recursive=true"
    ```
 
@@ -61,7 +57,7 @@ For each significant file:
 
 1. **Get Symbol Overview**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use get_symbols_overview for '[file_path]' with depth=2"
    ```
 
@@ -73,7 +69,7 @@ For each significant file:
 
 3. **Symbol Details** (for key symbols):
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol with name_path_pattern='[symbol_name]', include_body=true, depth=1"
    ```
 
@@ -86,7 +82,7 @@ For each significant file:
 2. **Incoming Dependencies**
    For each key symbol:
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_referencing_symbols for '[symbol_name]' in '[file_path]'"
    ```
 
@@ -227,7 +223,7 @@ graph LR
 Store extracted knowledge for future sessions:
 
 ```
-Task: serena-gateway
+# Note: Main session calls Serena MCP directly
 Prompt: "Use write_memory to save knowledge graph to 'project-knowledge-graph.md' with content: [markdown_content]"
 ```
 

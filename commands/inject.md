@@ -1,5 +1,9 @@
 ---
 description: Intelligent feature injection with project knowledge. Extracts project structure, plans implementation following conventions, and safely injects new code.
+skills:
+  - project-knowledge-graph
+  - feature-injection-rules
+  - solid-design-rules
 allowed-tools:
   - Task
   - Read
@@ -86,8 +90,8 @@ Skill("serena-refactor:feature-injection-rules")
 ### Check for Existing Knowledge
 
 ```
-Task: serena-gateway
-Prompt: "Use read_memory 'project-knowledge-graph.md'"
+mcp__serena__read_memory:
+  key: "project-knowledge-graph.md"
 ```
 
 ### If No Knowledge Exists
@@ -288,14 +292,18 @@ Task:
 ### Update Knowledge Graph
 
 ```
-Task: serena-gateway
-Prompt: |
-  Update project knowledge graph with new additions:
-  - New symbols: [list]
-  - New dependencies: [list]
-  - Updated patterns: [list]
+# 1. Read existing graph
+mcp__serena__read_memory:
+  key: "project-knowledge-graph.md"
 
-  Read existing 'project-knowledge-graph.md', merge updates, and write back.
+# 2. Merge updates and write back
+mcp__serena__write_memory:
+  key: "project-knowledge-graph.md"
+  content: |
+    [Updated knowledge graph with new additions:
+    - New symbols: [list]
+    - New dependencies: [list]
+    - Updated patterns: [list]]
 ```
 
 ### Suggest Next Steps

@@ -1,14 +1,17 @@
 ---
 description: Quick code quality audit. Verifies code quality before and after refactoring.
+skills:
+  - solid-design-rules
+  - serena-refactoring-patterns
 allowed-tools:
   - Task
   - Read
   - Glob
   - Grep
-  - mcp__plugin_serena_serena__find_symbol
-  - mcp__plugin_serena_serena__search_for_pattern
-  - mcp__plugin_serena_serena__execute_shell_command
-  - mcp__plugin_serena_serena__activate_project
+  - mcp__serena__find_symbol
+  - mcp__serena__search_for_pattern
+  - mcp__serena__execute_shell_command
+  - mcp__serena__activate_project
 ---
 
 # Audit Command

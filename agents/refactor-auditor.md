@@ -3,7 +3,7 @@ description: Refactoring quality auditor. Compares code quality before and after
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
 name: refactor-auditor
-tools: ["Task", "Read", "Glob", "Grep", "Bash"]
+tools: []
 ---
 # Refactor Auditor Agent
 
@@ -18,18 +18,15 @@ Skill("serena-refactor:solid-design-rules")
 Skill("serena-refactor:serena-refactoring-patterns")
 ```
 
-## Important: Use Serena Gateway
+## Architecture: Data-Driven Auditing
 
-**All Serena tools must be called only through serena-gateway.**
+**This agent receives pre-fetched data from the main session.** It does NOT call MCP tools directly.
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
-    type: QUERY|ANALYZE
-    operation: [tool name]
-    params: { ... }
-```
+The main session gathers data using Serena MCP tools and passes it to this agent:
+- Changed file lists from git diff
+- Symbol structures from `get_symbols_overview`
+- Pattern scan results from `search_for_pattern`
+- Reference integrity data from `find_referencing_symbols`
 
 ---
 
@@ -56,10 +53,8 @@ Collect list of changed files
 ### Step 2: Scan for Incomplete Patterns
 
 **Prohibited Patterns:**
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: QUERY
     operation: search_for_pattern
     params:
@@ -70,10 +65,8 @@ Task:
 ```
 
 **Placeholder Detection:**
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: QUERY
     operation: search_for_pattern
     params:
@@ -84,10 +77,8 @@ Task:
 ```
 
 **Empty Catch Blocks:**
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: QUERY
     operation: search_for_pattern
     params:
@@ -100,10 +91,8 @@ Task:
 ### Step 3: Reference Integrity Check
 
 For each changed symbol:
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: ANALYZE
     operation: find_referencing_symbols
     params:
@@ -133,10 +122,8 @@ Task:
 
 New issues introduced by refactoring:
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: QUERY
     operation: get_symbols_overview
     params:
@@ -257,7 +244,7 @@ npm test
 
 ## Core Rules
 
-1. **Use only Serena Gateway** - Direct Serena tool calls prohibited
+1. **Analyze pre-fetched data only** - MCP calls are made by main session
 2. **TODO/FIXME = Auto FAIL** - Incomplete code not allowed
 3. **Broken references = Auto FAIL** - Invalid references not allowed
 4. **Test failures = Auto FAIL** - Regression not allowed

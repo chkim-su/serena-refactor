@@ -1,17 +1,18 @@
 {
   "description": "Serena Refactoring Plugin Hooks - Workflow Enforcement and Quality Gates",
   "hooks": {
-    "PreToolUse": [
+    "SessionStart": [
       {
-        "matcher": "Task",
         "hooks": [
           {
             "type": "command",
-            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"serena-gateway\"* ]] && exit 0; echo \"$INPUT\" | jq -r '.tool_input.prompt // \"\"' | grep -qi 'MODIFY' || exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔒 MODIFICATION GATE - Modification Request Detected' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ -f .refactor-plan-approved ]; then echo '  ✓ Plan approved'; else echo '  ⚠️  Plan not approved - Run /serena-refactor:plan first'; fi && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null && echo '  ✓ Working directory clean' || echo '  ⚠️  WARNING: Uncommitted changes - Backup recommended!') || echo '  ℹ️  Not a Git repository'",
-            "timeout": 10
+            "command": "MCP_FILE=\"$HOME/.claude/mcp_servers.json\"; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔧 Serena Refactor Plugin - MCP Configuration Check' && echo '════════════════════════════════════════════════════════════' && echo '' && if ! command -v jq &>/dev/null; then echo '  ⚠️  jq not installed - manual MCP setup required' && echo '  Add to ~/.claude/mcp_servers.json:' && echo '  \"serena\": {\"command\": \"uvx\", \"args\": [\"--from\", \"git+https://github.com/oraios/serena\", \"serena\", \"start-mcp-server\"]}' && echo '════════════════════════════════════════════════════════════' && exit 0; fi && if ! command -v uvx &>/dev/null; then echo '  ⚠️  uvx not installed - Serena requires uv' && echo '  Install: curl -LsSf https://astral.sh/uv/install.sh | sh' && echo '════════════════════════════════════════════════════════════' && exit 0; fi && [ ! -f \"$MCP_FILE\" ] && mkdir -p \"$HOME/.claude\" && echo '{\"mcpServers\":{}}' > \"$MCP_FILE\"; if jq -e '.mcpServers.serena' \"$MCP_FILE\" >/dev/null 2>&1; then echo '  ✓ Serena MCP configured' && echo '════════════════════════════════════════════════════════════' && exit 0; fi && echo '  ⚙️  Adding Serena MCP...' && jq '.mcpServers.serena = {\"command\": \"uvx\", \"args\": [\"--from\", \"git+https://github.com/oraios/serena\", \"serena\", \"start-mcp-server\"]}' \"$MCP_FILE\" > \"${MCP_FILE}.tmp\" && mv \"${MCP_FILE}.tmp\" \"$MCP_FILE\" && echo '  ✅ Serena MCP auto-configured!' && echo '' && echo '  ⚠️  RESTART CLAUDE CODE for changes to take effect' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 15
           }
         ]
-      },
+      }
+    ],
+    "PreToolUse": [
       {
         "matcher": "Task",
         "hooks": [
@@ -150,16 +151,6 @@
           {
             "type": "command",
             "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"refactor-auditor\"* ]] && exit 0; OUTPUT=$(echo \"$INPUT\" | jq -r '.tool_result // \"\"'); echo \"$OUTPUT\" | grep -qE 'VERDICT: FAIL|FINAL VERDICT: FAIL' || exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ❌ Audit Failed - QUALITY GATE BLOCKED' && echo '' && echo '  Status: Workflow state preserved' && echo '  → .refactor-execution-done remains' && echo '' && echo '  Issues must be fixed:' && echo '  • Remove TODO/FIXME' && echo '  • Complete empty implementations' && echo '  • Verify reference integrity' && echo '  • Ensure tests pass' && echo '' && echo '  Run /serena-refactor:audit again after fixes.' && echo '════════════════════════════════════════════════════════════'",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"serena-gateway\"* ]] && exit 0; echo \"$INPUT\" | jq -r '.tool_input.prompt // \"\"' | grep -qi 'MODIFY' || exit 0; echo '' && echo '  ✓ Serena modification complete' && echo '  ℹ️  Reference integrity auto-maintained by Serena Gateway'",
             "timeout": 5
           }
         ]

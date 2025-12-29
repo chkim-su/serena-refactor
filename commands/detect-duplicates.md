@@ -1,11 +1,13 @@
 ---
 description: Duplicate code and role detection. Identifies clone code, similar functions, and duplicate constants, suggesting consolidation approaches.
+skills:
+  - duplicate-detection-rules
 allowed-tools:
   - Task
   - Read
   - Glob
   - Grep
-  - mcp__plugin_serena_serena__activate_project
+  - mcp__serena__activate_project
 ---
 
 # Detect Duplicates Command
@@ -23,7 +25,7 @@ Detects duplicated code and roles in the codebase.
 ### Step 0: Activate Serena Project
 
 ```
-mcp__plugin_serena_serena__activate_project:
+mcp__serena__activate_project:
   project: [current directory]
 ```
 

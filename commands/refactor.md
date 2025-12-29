@@ -1,5 +1,8 @@
 ---
 description: Serena MCP-based automated refactoring. Executes the full workflow of analysis, planning, execution, and verification.
+skills:
+  - solid-design-rules
+  - serena-refactoring-patterns
 allowed-tools:
   - Task
   - Read
@@ -9,17 +12,7 @@ allowed-tools:
   - Grep
   - Bash
   - AskUserQuestion
-  - mcp__plugin_serena_serena__find_symbol
-  - mcp__plugin_serena_serena__find_referencing_symbols
-  - mcp__plugin_serena_serena__get_symbols_overview
-  - mcp__plugin_serena_serena__replace_symbol_body
-  - mcp__plugin_serena_serena__replace_content
-  - mcp__plugin_serena_serena__insert_after_symbol
-  - mcp__plugin_serena_serena__insert_before_symbol
-  - mcp__plugin_serena_serena__rename_symbol
-  - mcp__plugin_serena_serena__activate_project
-  - mcp__plugin_serena_serena__execute_shell_command
-  - mcp__plugin_serena_serena__write_memory
+  - TodoWrite
 ---
 
 # Refactor Command
@@ -83,7 +76,7 @@ Full refactoring workflow using Serena MCP.
 
 ### Activate Serena Project
 ```
-mcp__plugin_serena_serena__activate_project:
+mcp__serena__activate_project:
   project: [target directory]
 ```
 

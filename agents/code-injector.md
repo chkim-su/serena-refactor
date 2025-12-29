@@ -5,12 +5,7 @@ name: code-injector
 skills:
   - feature-injection-rules
   - serena-refactoring-patterns
-tools:
-  - Task
-  - Read
-  - Bash
-  - Glob
-  - Grep
+tools: []
 ---
 # Code Injector Agent
 
@@ -49,7 +44,7 @@ Request:
 
 2. **Conflict Check**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[new_symbol_name]' to check for conflicts"
    ```
 
@@ -70,7 +65,7 @@ For each step in order:
 
 2. **Verify Creation**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use get_symbols_overview for '[new_file]' to verify structure"
    ```
 
@@ -78,27 +73,27 @@ For each step in order:
 
 1. **Locate Anchor**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[anchor_symbol]' in '[file]' to get position"
    ```
 
 2. **Add Imports First**
    If imports needed:
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use insert_before_symbol before first import in '[file]' with body: '[new_imports]'"
    ```
    Or use replace_content for import section.
 
 3. **Insert Symbol**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use insert_after_symbol after '[anchor_symbol]' in '[file]' with body containing: '[code]'"
    ```
 
 4. **Verify Insertion**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[new_symbol]' to verify it exists with correct structure"
    ```
 
@@ -106,7 +101,7 @@ For each step in order:
 
 1. **Find Class**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[class_name]' with depth=1 to get methods"
    ```
 
@@ -116,7 +111,7 @@ For each step in order:
 
 3. **Insert Method**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use insert_after_symbol after '[last_method]' in '[file]' with body: '[method_code]'"
    ```
 
@@ -124,13 +119,13 @@ For each step in order:
 
 1. **Get Current State**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[symbol]' with include_body=true"
    ```
 
 2. **Replace Symbol Body**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use replace_symbol_body for '[symbol]' in '[file]' with new body: '[new_code]'"
    ```
 
@@ -150,7 +145,7 @@ For each step in order:
 
 2. **Check Existing Imports**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use get_symbols_overview for '[file]' to see import structure"
    ```
 
@@ -186,7 +181,7 @@ If Serena reports syntax error after injection:
 
 3. **Rollback if Needed**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use replace_content in '[file]' to restore: '[original_content]'"
    ```
 
@@ -231,7 +226,7 @@ go build -n [file]
 ### Symbol Verification
 
 ```
-Task: serena-gateway
+# Note: Main session calls Serena MCP directly
 Prompt: "Use find_symbol for each injected symbol to verify existence"
 ```
 
@@ -239,7 +234,7 @@ Prompt: "Use find_symbol for each injected symbol to verify existence"
 
 Check that references are valid:
 ```
-Task: serena-gateway
+# Note: Main session calls Serena MCP directly
 Prompt: "Use find_referencing_symbols for '[new_symbol]' to verify it's reachable"
 ```
 
@@ -251,7 +246,7 @@ After successful injection:
 
 1. **Update Memory**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use read_memory 'project-knowledge-graph.md', add new symbols, then write_memory to update"
    ```
 

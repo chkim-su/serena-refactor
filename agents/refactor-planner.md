@@ -3,7 +3,7 @@ description: Refactoring plan architect. Creates step-by-step refactoring plans 
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
 name: refactor-planner
-tools: ["Task", "Read", "Glob", "Grep"]
+tools: []
 ---
 # Refactor Planner Agent
 
@@ -18,18 +18,14 @@ Skill("serena-refactor:solid-design-rules")
 Skill("serena-refactor:serena-refactoring-patterns")
 ```
 
-## Important: Use Serena Gateway
+## Architecture: Data-Driven Planning
 
-**All Serena tools must be called only through serena-gateway.**
+**This agent receives pre-fetched data from the main session.** It does NOT call MCP tools directly.
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
-    type: QUERY|ANALYZE
-    operation: [tool name]
-    params: { ... }
-```
+The main session gathers data using Serena MCP tools and passes it to this agent:
+- Symbol overviews from `get_symbols_overview`
+- Reference data from `find_referencing_symbols`
+- Pattern matches from `search_for_pattern`
 
 ---
 
@@ -46,20 +42,16 @@ Task:
 
 ### Step 1: Assess Current State
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: MEMORY
     operation: list_memories
 
     Check if previous analysis results exist.
 ```
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: QUERY
     operation: get_symbols_overview
     params:
@@ -72,10 +64,8 @@ Task:
 ### Step 2: Build Dependency Graph
 
 For each major symbol:
-```
-Task:
-  agent: serena-gateway
-  prompt: |
+```python
+# Main session MCP call:
     type: ANALYZE
     operation: find_referencing_symbols
     params:
@@ -110,7 +100,7 @@ For each refactoring step:
 
 1. **Goal** - What is being improved
 2. **Target symbol** - Exact symbol path
-3. **Serena Gateway requests** - Tools and sequence to use
+3. **Serena MCP calls** - Tools and sequence for main session
 4. **Affected files** - List of files to be modified
 5. **Verification method** - Tests and checks
 6. **Rollback method** - Restoration procedure on failure
@@ -155,23 +145,23 @@ graph TD
 - File: `src/path/to/file.ts:45`
 - Reference count: X
 
-**Serena Gateway Execution Plan:**
+**Main Session MCP Execution Plan:**
 ```
-1. Task(serena-gateway):
+# 1. Query symbol (main session executes):
      type: QUERY
      operation: find_symbol
      params:
        name_path_pattern: "ClassName/methodName"
        include_body: true
 
-2. Task(serena-gateway):
+# 2. Insert method (main session executes):
      type: MODIFY
      operation: insert_after_symbol
      params:
        name_path: "ClassName/existingMethod"
        body: "..."
 
-3. Task(serena-gateway):
+# 3. Replace content (main session executes):
      type: MODIFY
      operation: replace_content
      params:
@@ -248,4 +238,4 @@ git checkout [commit-hash] -- [files]
 3. **One step = one concern** - No simultaneous multiple violation fixes
 4. **No tests = tests first** - Add tests before refactoring
 5. **Rollback path required** - Specify rollback method for all steps
-6. **Use only Serena Gateway** - Direct Serena tool calls prohibited
+6. **Analyze pre-fetched data only** - MCP calls are made by main session

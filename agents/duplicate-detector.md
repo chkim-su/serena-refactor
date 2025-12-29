@@ -1,9 +1,9 @@
 ---
-description: Duplicate role, variable, and code pattern detector. Identifies code with similar functionality and suggests consolidation refactoring. Performs symbol analysis through Serena Gateway.
+description: Duplicate role, variable, and code pattern detector. Identifies code with similar functionality and suggests consolidation refactoring. Receives pre-fetched symbol data for analysis.
 model: sonnet
 name: duplicate-detector
 skills: ["duplicate-detection-rules"]
-tools: ["Task", "Read", "Glob", "Grep"]
+tools: []
 ---
 # Duplicate Detector Agent
 
@@ -33,17 +33,19 @@ Skill("serena-refactor:duplicate-detection-rules")
 
 ### Phase 1: Structure Scan
 
-Collect overall symbol structure via Serena Gateway:
+**Note: This agent receives pre-fetched data from the main session.**
 
+The main session calls Serena MCP tools directly:
+```python
+# Main session executes:
+mcp__serena__get_symbols_overview(relative_path=".", depth=2)
 ```
-Task:
-  agent: serena-gateway
-  prompt: |
-    type: QUERY
-    operation: get_symbols_overview
-    params:
-      recursive: true
-      depth: 2
+
+Expected input data format:
+```json
+{
+  "symbols": [{"name": "...", "kind": "...", "location": {...}}]
+}
 ```
 
 ### Phase 2: Name Pattern Analysis
@@ -83,17 +85,14 @@ Similar return types:
 
 ### Phase 4: Code Body Similarity
 
-Query suspicious symbols' bodies via Serena Gateway:
+Query suspicious symbols' bodies (main session provides data):
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
-    type: QUERY
-    operation: find_symbol
-    params:
-      name_path_pattern: [symbol name]
-      include_body: true
+```python
+# Main session executes:
+mcp__serena__find_symbol(
+    name_path_pattern="[symbol name]",
+    include_body=True
+)
 ```
 
 **Similarity Measurement Criteria:**
@@ -105,15 +104,12 @@ Task:
 
 Detect similar functions called from same locations:
 
-```
-Task:
-  agent: serena-gateway
-  prompt: |
-    type: ANALYZE
-    operation: find_referencing_symbols
-    params:
-      name_path: [symbolA]
-
+```python
+# Main session executes:
+mcp__serena__find_referencing_symbols(
+    name_path="[symbolA]",
+    relative_path="[file]"
+)
 # If symbolB is also referenced from same locations, high duplication likelihood
 ```
 
@@ -272,7 +268,7 @@ UserValidator and UserChecker both have
 
 ## Core Rules
 
-1. **Query symbols only through Serena Gateway** - Direct Serena calls prohibited
+1. **Analyze pre-fetched data only** - MCP calls are made by main session
 2. **Respect similarity thresholds** - Don't report below 70%
 3. **Always include impact** - Specify reference count, affected file count
 4. **Concrete fix path** - Provide Serena tool names and sequence

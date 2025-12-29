@@ -1,13 +1,15 @@
 ---
 description: Serena-based safe symbol renaming. Automatically updates all references across the entire codebase.
+skills:
+  - serena-refactoring-patterns
 allowed-tools:
   - Task
   - Read
   - AskUserQuestion
-  - mcp__plugin_serena_serena__find_symbol
-  - mcp__plugin_serena_serena__find_referencing_symbols
-  - mcp__plugin_serena_serena__rename_symbol
-  - mcp__plugin_serena_serena__activate_project
+  - mcp__serena__find_symbol
+  - mcp__serena__find_referencing_symbols
+  - mcp__serena__rename_symbol
+  - mcp__serena__activate_project
 ---
 
 # Rename Command
@@ -32,7 +34,7 @@ Safe symbol renaming using Serena MCP.
 ### Step 1: Verify Symbol
 
 ```
-mcp__plugin_serena_serena__find_symbol:
+mcp__serena__find_symbol:
   name_path_pattern: [symbol]
   include_body: False
 ```
@@ -47,7 +49,7 @@ AskUserQuestion:
 ### Step 2: Impact Analysis
 
 ```
-mcp__plugin_serena_serena__find_referencing_symbols:
+mcp__serena__find_referencing_symbols:
   name_path: [symbol]
   relative_path: [file]
 ```
@@ -88,7 +90,7 @@ AskUserQuestion:
 ### Step 5: Execute Rename
 
 ```
-mcp__plugin_serena_serena__rename_symbol:
+mcp__serena__rename_symbol:
   name_path: [symbol]
   relative_path: [file]
   new_name: [new-name]

@@ -1,16 +1,19 @@
 ---
 description: Serena-based code extraction. Safely performs method, interface, and class extraction at the symbol level.
+skills:
+  - serena-refactoring-patterns
+  - solid-design-rules
 allowed-tools:
   - Task
   - Read
   - AskUserQuestion
-  - mcp__plugin_serena_serena__find_symbol
-  - mcp__plugin_serena_serena__find_referencing_symbols
-  - mcp__plugin_serena_serena__replace_symbol_body
-  - mcp__plugin_serena_serena__replace_content
-  - mcp__plugin_serena_serena__insert_after_symbol
-  - mcp__plugin_serena_serena__insert_before_symbol
-  - mcp__plugin_serena_serena__activate_project
+  - mcp__serena__find_symbol
+  - mcp__serena__find_referencing_symbols
+  - mcp__serena__replace_symbol_body
+  - mcp__serena__replace_content
+  - mcp__serena__insert_after_symbol
+  - mcp__serena__insert_before_symbol
+  - mcp__serena__activate_project
 ---
 
 # Extract Command
@@ -40,7 +43,7 @@ Code extraction refactoring using Serena MCP.
 #### 1. Analyze Target Method
 
 ```
-mcp__plugin_serena_serena__find_symbol:
+mcp__serena__find_symbol:
   name_path_pattern: [source]
   include_body: True
 ```
@@ -61,7 +64,7 @@ AskUserQuestion:
 #### 3. Create New Method
 
 ```
-mcp__plugin_serena_serena__insert_after_symbol:
+mcp__serena__insert_after_symbol:
   name_path: [source]
   relative_path: [file]
   body: |
@@ -72,7 +75,7 @@ mcp__plugin_serena_serena__insert_after_symbol:
 #### 4. Modify Original
 
 ```
-mcp__plugin_serena_serena__replace_content:
+mcp__serena__replace_content:
   relative_path: [file]
   needle: "extracted code pattern"
   repl: "self.extracted_method(args)"
@@ -88,7 +91,7 @@ mcp__plugin_serena_serena__replace_content:
 #### 1. Analyze Class
 
 ```
-mcp__plugin_serena_serena__find_symbol:
+mcp__serena__find_symbol:
   name_path_pattern: [source]
   depth: 1
   include_body: False
@@ -101,7 +104,7 @@ Only public methods included in interface
 #### 3. Create Interface
 
 ```
-mcp__plugin_serena_serena__insert_before_symbol:
+mcp__serena__insert_before_symbol:
   name_path: [source]
   relative_path: [file]
   body: |
@@ -114,7 +117,7 @@ mcp__plugin_serena_serena__insert_before_symbol:
 #### 4. Modify Class
 
 ```
-mcp__plugin_serena_serena__replace_symbol_body:
+mcp__serena__replace_symbol_body:
   name_path: [source]
   relative_path: [file]
   body: |
@@ -132,7 +135,7 @@ mcp__plugin_serena_serena__replace_symbol_body:
 #### 1. Responsibility Analysis
 
 ```
-mcp__plugin_serena_serena__find_symbol:
+mcp__serena__find_symbol:
   name_path_pattern: [source]
   depth: 1
   include_body: False
@@ -156,7 +159,7 @@ AskUserQuestion:
 #### 3. Create New Class
 
 ```
-mcp__plugin_serena_serena__insert_after_symbol:
+mcp__serena__insert_after_symbol:
   name_path: [source]
   relative_path: [file]
   body: |
@@ -168,7 +171,7 @@ mcp__plugin_serena_serena__insert_after_symbol:
 #### 4. Delegate from Original Class
 
 ```
-mcp__plugin_serena_serena__replace_symbol_body:
+mcp__serena__replace_symbol_body:
   # Replace moved methods with delegation calls
 ```
 

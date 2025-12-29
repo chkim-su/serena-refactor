@@ -1,16 +1,15 @@
 ---
 description: Refactoring plan creation only. Generates step-by-step plans based on analysis results for user review.
+skills:
+  - solid-design-rules
+  - serena-refactoring-patterns
 allowed-tools:
   - Task
   - Read
   - Glob
   - Grep
   - AskUserQuestion
-  - mcp__plugin_serena_serena__find_symbol
-  - mcp__plugin_serena_serena__find_referencing_symbols
-  - mcp__plugin_serena_serena__get_symbols_overview
-  - mcp__plugin_serena_serena__list_dir
-  - mcp__plugin_serena_serena__activate_project
+  - TodoWrite
 ---
 
 # Plan Command
@@ -28,7 +27,7 @@ Refactoring plan creation command.
 ### Step 1: Activate Serena Project
 
 ```
-mcp__plugin_serena_serena__activate_project:
+mcp__serena__activate_project:
   project: [target directory]
 ```
 

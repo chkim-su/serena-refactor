@@ -6,11 +6,7 @@ skills:
   - project-knowledge-graph
   - feature-injection-rules
   - solid-design-rules
-tools:
-  - Task
-  - Read
-  - Glob
-  - Grep
+tools: []
 ---
 # Feature Planner Agent
 
@@ -108,7 +104,7 @@ Request:
 
 1. **Dependency Impact**
    ```
-   Task: serena-gateway
+   # Note: Main session calls Serena MCP directly
    Prompt: "Use find_symbol for '[existing_symbol]' to check current state"
    ```
 

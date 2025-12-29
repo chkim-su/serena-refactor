@@ -4,14 +4,14 @@
     "name": "chanhokim"
   },
   "metadata": {
-    "description": "Serena MCP-based symbolic refactoring plugin marketplace. Data-driven agent architecture for efficient code analysis, duplicate detection, strict quality gates, and intelligent feature injection.",
-    "version": "2.4.0"
+    "description": "Serena MCP-based symbolic refactoring plugin marketplace. Data-driven agent architecture for efficient code analysis, duplicate detection, strict quality gates, intelligent feature injection, and systematic debugging workflows.",
+    "version": "2.6.0"
   },
   "plugins": [
     {
       "name": "serena-refactor",
-      "description": "Serena MCP-based symbolic refactoring plugin with data-driven agent architecture. Direct daemon integration for SOLID analysis, duplicate detection, safe renaming, and intelligent feature injection. Hook-based workflow enforcement ensures code quality through automated gates.",
-      "version": "2.4.0",
+      "description": "Serena MCP-based symbolic refactoring plugin with data-driven agent architecture. Direct daemon integration for SOLID analysis, duplicate detection, safe renaming, intelligent feature injection, and systematic debugging with parallel agent exploration. Hook-based workflow enforcement ensures code quality through automated gates.",
+      "version": "2.6.0",
       "source": "./",
       "author": {
         "name": "chanhokim"
@@ -28,14 +28,21 @@
         "duplicate-detection",
         "quality-gate",
         "feature-injection",
-        "knowledge-graph"
+        "knowledge-graph",
+        "e2e-testing",
+        "playwright",
+        "user-simulation",
+        "debugging",
+        "root-cause-analysis"
       ],
       "skills": [
         "./skills/solid-design-rules",
         "./skills/serena-refactoring-patterns",
         "./skills/duplicate-detection-rules",
         "./skills/project-knowledge-graph",
-        "./skills/feature-injection-rules"
+        "./skills/feature-injection-rules",
+        "./skills/user-simulation-test",
+        "./skills/debugging-workflow"
       ],
       "commands": [
         "./commands/analyze.md",
@@ -45,7 +52,9 @@
         "./commands/inject.md",
         "./commands/plan.md",
         "./commands/refactor.md",
-        "./commands/rename.md"
+        "./commands/rename.md",
+        "./commands/e2e-test.md",
+        "./commands/debug.md"
       ],
       "agents": [
         "./agents/serena-solid-analyzer.md",
@@ -55,7 +64,11 @@
         "./agents/duplicate-detector.md",
         "./agents/knowledge-extractor.md",
         "./agents/feature-planner.md",
-        "./agents/code-injector.md"
+        "./agents/code-injector.md",
+        "./agents/e2e-test-runner.md",
+        "./agents/debug-explorer.md",
+        "./agents/debug-strategist.md",
+        "./agents/debug-verifier.md"
       ],
       "hooks": "./hooks/hooks.json"
     }

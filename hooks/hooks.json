@@ -92,6 +92,46 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"e2e-test-runner\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🧪 E2E TEST RUNNER - Pre-Test Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Checking environment:' && echo '' && if command -v curl &>/dev/null; then (curl -s -o /dev/null -w '' http://localhost:3000 2>/dev/null && echo '  ✓ Dev server running on :3000') || (curl -s -o /dev/null -w '' http://localhost:8000 2>/dev/null && echo '  ✓ Dev server running on :8000') || echo '  ⚠️  No dev server detected on common ports'; else echo '  ⚠️  curl not available for server check'; fi && echo '' && echo '  Test types available:' && echo '  • UI E2E (Playwright browser automation)' && echo '  • API Sequence (HTTP request flows)' && echo '  • Integration (UI + API combined)' && echo '  • Scenario-based (custom user journeys)' && echo '' && echo '  ⚠️  Note: Tests may consume real resources!' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-explorer\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔍 DEBUG EXPLORER - Starting Investigation' && echo '════════════════════════════════════════════════════════════' && echo '' && FOCUS=$(echo \"$INPUT\" | jq -r '.tool_input.prompt // \"\"' | grep -oE 'Focus: [a-z_]+' | head -1 | cut -d' ' -f2); echo \"  Focus: ${FOCUS:-unknown}\" && echo '' && echo '  Investigation targets:' && echo '  • Execution path tracing' && echo '  • Data flow analysis' && echo '  • Dependency mapping' && echo '  • Symbol-level inspection' && echo '' && echo '  Using Serena MCP for precise analysis' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-strategist\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  📋 DEBUG STRATEGIST - Designing Fix Strategy' && echo '════════════════════════════════════════════════════════════' && echo '' && APPROACH=$(echo \"$INPUT\" | jq -r '.tool_input.prompt // \"\"' | grep -oE 'Approach: [a-z]+' | head -1 | cut -d' ' -f2); echo \"  Approach: ${APPROACH:-unknown}\" && echo '' && echo '  Strategy design:' && echo '  • Risk assessment' && echo '  • Side effect analysis' && echo '  • Implementation blueprint' && echo '  • SOLID compliance check' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-verifier\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✅ DEBUG VERIFIER - Starting Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && FOCUS=$(echo \"$INPUT\" | jq -r '.tool_input.prompt // \"\"' | grep -oE 'Focus: [a-z_]+' | head -1 | cut -d' ' -f2); echo \"  Focus: ${FOCUS:-unknown}\" && echo '' && echo '  Verification checks:' && echo '  • Direct bug fix verification' && echo '  • Regression testing' && echo '  • Edge case coverage' && echo '  • Confidence-based reporting (≥80%)' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -194,6 +234,46 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"e2e-test-runner\"* ]] && exit 0; OUTPUT=$(echo \"$INPUT\" | jq -r '.tool_result // \"\"'); touch .e2e-test-executed && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🧪 E2E TEST COMPLETED' && echo '════════════════════════════════════════════════════════════' && echo '' && if echo \"$OUTPUT\" | grep -qE '\"status\":\\s*\"success\"|passed.*[0-9]+|all.*passed'; then echo '  ✅ Tests PASSED' && echo '' && echo '  Next steps:' && echo '  → Review test results above' && echo '  → git add . && git commit -m \"feat/fix: ...\"' && echo '  → Or continue development'; else echo '  ⚠️  Tests completed (check results above)' && echo '' && echo '  If tests failed:' && echo '  → Review failure details and screenshots' && echo '  → Fix issues and re-run: /serena-refactor:e2e-test'; fi && echo '' && echo '  [.e2e-test-executed] created' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-explorer\"* ]] && exit 0; touch .debug-exploration-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Debug Exploration Complete - State Saved' && echo '' && echo '  [.debug-exploration-done] created' && echo '' && echo '  Exploration findings captured.' && echo '  Wait for other explorer agents to complete.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-strategist\"* ]] && exit 0; touch .debug-strategy-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Debug Strategy Complete - State Saved' && echo '' && echo '  [.debug-strategy-done] created' && echo '' && echo '  Fix strategy designed.' && echo '  Wait for user approval before implementation.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"debug-verifier\"* ]] && exit 0; OUTPUT=$(echo \"$INPUT\" | jq -r '.tool_result // \"\"'); touch .debug-verification-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Debug Verification Complete' && echo '' && echo '  [.debug-verification-done] created' && echo '════════════════════════════════════════════════════════════' && if echo \"$OUTPUT\" | grep -qiE 'PASS|verified|success'; then echo '' && echo '  ✅ Verification PASSED' && rm -f .debug-discovery-done .debug-exploration-done .debug-rootcause-done .debug-strategy-approved .debug-fix-applied .debug-strategy-done 2>/dev/null && echo '' && echo '  Debug workflow completed successfully!' && echo '  → git add . && git commit -m \"fix: [description]\"'; else echo '' && echo '  ⚠️  Check verification results above' && echo '  → If issues found, iterate on fixes'; fi && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Stop": [
@@ -201,7 +281,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 Session Ending - Status Check' && echo '════════════════════════════════════════════════════════════' && echo '' && REFACTOR_WF=0 && INJECT_WF=0 && if [ -f .refactor-analysis-done ] || [ -f .refactor-plan-approved ] || [ -f .refactor-execution-done ]; then echo '  ⚠️  In-progress refactoring workflow:' && ls -la .refactor-* 2>/dev/null | awk '{print \"    \" $NF}' && REFACTOR_WF=1; fi && if [ -f .inject-knowledge-extracted ] || [ -f .inject-plan-approved ] || [ -f .inject-execution-done ]; then echo '  ⚠️  In-progress injection workflow:' && ls -la .inject-* 2>/dev/null | awk '{print \"    \" $NF}' && INJECT_WF=1; fi && if [ $REFACTOR_WF -eq 0 ] && [ $INJECT_WF -eq 0 ]; then echo '  ✓ No workflow in progress'; else echo '' && echo '  Keep state files to continue in next session' && echo '  To cancel: rm .refactor-* .inject-*'; fi && echo '' && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || (echo '  ⚠️  Uncommitted changes:' && echo '  → Save: git commit -m \"feat/refactor: ...\"' && echo '  → Rollback: git checkout -- .' && echo '' && if [ ! -f .refactor-audit-passed ] && [ ! -f .inject-execution-done ]; then echo '  🚫 Recommend verification before commit!' && echo '  → Run /serena-refactor:audit'; fi)) && echo '════════════════════════════════════════════════════════════' || true",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 Session Ending - Status Check' && echo '════════════════════════════════════════════════════════════' && echo '' && REFACTOR_WF=0 && INJECT_WF=0 && DEBUG_WF=0 && if [ -f .refactor-analysis-done ] || [ -f .refactor-plan-approved ] || [ -f .refactor-execution-done ]; then echo '  ⚠️  In-progress refactoring workflow:' && ls -la .refactor-* 2>/dev/null | awk '{print \"    \" $NF}' && REFACTOR_WF=1; fi && if [ -f .inject-knowledge-extracted ] || [ -f .inject-plan-approved ] || [ -f .inject-execution-done ]; then echo '  ⚠️  In-progress injection workflow:' && ls -la .inject-* 2>/dev/null | awk '{print \"    \" $NF}' && INJECT_WF=1; fi && if [ -f .debug-discovery-done ] || [ -f .debug-exploration-done ] || [ -f .debug-rootcause-done ] || [ -f .debug-strategy-approved ] || [ -f .debug-fix-applied ] || [ -f .debug-strategy-done ]; then echo '  ⚠️  In-progress debug workflow:' && ls -la .debug-* 2>/dev/null | awk '{print \"    \" $NF}' && DEBUG_WF=1; fi && if [ $REFACTOR_WF -eq 0 ] && [ $INJECT_WF -eq 0 ] && [ $DEBUG_WF -eq 0 ]; then echo '  ✓ No workflow in progress'; else echo '' && echo '  Keep state files to continue in next session' && echo '  To cancel: rm .refactor-* .inject-* .debug-*'; fi && echo '' && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || (echo '  ⚠️  Uncommitted changes:' && echo '  → Save: git commit -m \"feat/refactor/fix: ...\"' && echo '  → Rollback: git checkout -- .' && echo '' && if [ ! -f .refactor-audit-passed ] && [ ! -f .inject-execution-done ] && [ ! -f .debug-verification-done ]; then echo '  🚫 Recommend verification before commit!' && echo '  → Run /serena-refactor:audit'; fi)) && echo '════════════════════════════════════════════════════════════' || true",
             "timeout": 10
           }
         ]

@@ -132,6 +132,76 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-analyst\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔬 LAB ANALYST - Starting Analysis' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Analysis tasks:' && echo '  • Problem decomposition' && echo '  • Constraint identification' && echo '  • Hypothesis formation' && echo '' && echo '  Scientific methodology applied.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-experimenter\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🧪 LAB EXPERIMENTER - Starting Experiment' && echo '════════════════════════════════════════════════════════════' && echo '' && BLOCKED=0 && if [ ! -f .lab-hypotheses-approved ]; then echo '  ⚠️  WARNING: Experimenting without approved hypotheses' && echo '     → Recommended: Approve hypotheses first'; else echo '  ✓ Hypotheses approved'; fi && echo '' && echo '  Experiment tasks:' && echo '  • PoC implementation' && echo '  • Initial test execution' && echo '  • Parallel coordination (max 5)' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-verifier\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✅ LAB VERIFIER - Starting Verification' && echo '════════════════════════════════════════════════════════════' && echo '' && if [ ! -f .lab-experiments-done ]; then echo '  ⚠️  Experiments not marked complete' && echo '     Verification may be premature'; else echo '  ✓ Experiments completed'; fi && echo '' && echo '  Verification criteria:' && echo '  • Test pass/fail' && echo '  • Edge case coverage' && echo '  • Reproducibility check' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"source-fetcher\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🔎 SOURCE FETCHER - Collecting Approaches' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Search sources (priority order):' && echo '  1. GitHub Issues/Discussions' && echo '  2. Stack Overflow' && echo '  3. Official Documentation (Context7)' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"creative-generator\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 CREATIVE GENERATOR - Generating Novel Approaches' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Creative approach types:' && echo '  • API bypass/workarounds' && echo '  • Technology combinations' && echo '  • Constraint-ignoring experiments' && echo '' && echo '  Applying inversion, elimination, combination thinking.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"llm-consultant\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🤖 LLM CONSULTANT - Consulting External LLMs' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Available LLMs (via u-llm-sdk):' && echo '  • Gemini - broad knowledge queries' && echo '  • Codex - code-specific analysis' && echo '' && echo '  ⚠️  Remember: External LLMs cannot access project!' && echo '      Queries must be self-contained.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"edge-case-hunter\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  🎯 EDGE CASE HUNTER - Discovering Edge Cases' && echo '════════════════════════════════════════════════════════════' && echo '' && echo '  Edge case categories:' && echo '  • Input boundaries (empty, null, max)' && echo '  • State boundaries (init, transitional)' && echo '  • Timing (race conditions, timeouts)' && echo '  • Resources (exhaustion, unavailable)' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -274,6 +344,76 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-analyst\"* ]] && exit 0; touch .lab-problem-defined && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Lab Analysis Complete - State Saved' && echo '' && echo '  [.lab-problem-defined] created' && echo '' && echo '  Next steps:' && echo '  → Review problem decomposition' && echo '  → Approve hypotheses when ready' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"source-fetcher\"* ]] && exit 0; touch .lab-approaches-collected && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Source Collection Complete - State Saved' && echo '' && echo '  [.lab-approaches-collected] created' && echo '' && echo '  Existing approaches gathered from:' && echo '  • GitHub Issues/Discussions' && echo '  • Stack Overflow' && echo '  • Official Documentation' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"creative-generator\"* ]] && exit 0; touch .lab-approaches-collected && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Creative Generation Complete - State Saved' && echo '' && echo '  [.lab-approaches-collected] updated' && echo '' && echo '  Creative approaches generated.' && echo '  Ready for hypothesis formation.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-experimenter\"* ]] && exit 0; touch .lab-experiments-done && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Experiment Complete - State Saved' && echo '' && echo '  [.lab-experiments-done] created' && echo '' && echo '  Experiment results captured.' && echo '  Ready for verification phase.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"lab-verifier\"* ]] && exit 0; OUTPUT=$(echo \"$INPUT\" | jq -r '.tool_result // \"\"'); touch .lab-verified && echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Lab Verification Complete' && echo '' && echo '  [.lab-verified] created' && echo '════════════════════════════════════════════════════════════' && if echo \"$OUTPUT\" | grep -qiE 'PASS|success|recommended'; then echo '' && echo '  ✅ Verification PASSED' && touch .lab-report-generated && rm -f .lab-problem-defined .lab-approaches-collected .lab-hypotheses-approved .lab-experiments-running .lab-experiments-done 2>/dev/null && echo '' && echo '  Laboratory workflow completed!' && echo '  → Review report in docs/lab-reports/' && echo '  → Implement recommended approach'; else echo '' && echo '  ⚠️  Check verification results above' && echo '  → If all failed, iterate with new hypotheses'; fi && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"llm-consultant\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ LLM Consultation Complete' && echo '' && echo '  External perspectives gathered.' && echo '  Synthesize with other findings.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); SUBAGENT=$(echo \"$INPUT\" | jq -r '.tool_input.subagent_type // \"\"'); [[ \"$SUBAGENT\" != *\"edge-case-hunter\"* ]] && exit 0; echo '' && echo '════════════════════════════════════════════════════════════' && echo '  ✓ Edge Case Discovery Complete' && echo '' && echo '  Edge cases identified.' && echo '  Include in verification tests.' && echo '════════════════════════════════════════════════════════════'",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Stop": [
@@ -281,7 +421,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 Session Ending - Status Check' && echo '════════════════════════════════════════════════════════════' && echo '' && REFACTOR_WF=0 && INJECT_WF=0 && DEBUG_WF=0 && if [ -f .refactor-analysis-done ] || [ -f .refactor-plan-approved ] || [ -f .refactor-execution-done ]; then echo '  ⚠️  In-progress refactoring workflow:' && ls -la .refactor-* 2>/dev/null | awk '{print \"    \" $NF}' && REFACTOR_WF=1; fi && if [ -f .inject-knowledge-extracted ] || [ -f .inject-plan-approved ] || [ -f .inject-execution-done ]; then echo '  ⚠️  In-progress injection workflow:' && ls -la .inject-* 2>/dev/null | awk '{print \"    \" $NF}' && INJECT_WF=1; fi && if [ -f .debug-discovery-done ] || [ -f .debug-exploration-done ] || [ -f .debug-rootcause-done ] || [ -f .debug-strategy-approved ] || [ -f .debug-fix-applied ] || [ -f .debug-strategy-done ]; then echo '  ⚠️  In-progress debug workflow:' && ls -la .debug-* 2>/dev/null | awk '{print \"    \" $NF}' && DEBUG_WF=1; fi && if [ $REFACTOR_WF -eq 0 ] && [ $INJECT_WF -eq 0 ] && [ $DEBUG_WF -eq 0 ]; then echo '  ✓ No workflow in progress'; else echo '' && echo '  Keep state files to continue in next session' && echo '  To cancel: rm .refactor-* .inject-* .debug-*'; fi && echo '' && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || (echo '  ⚠️  Uncommitted changes:' && echo '  → Save: git commit -m \"feat/refactor/fix: ...\"' && echo '  → Rollback: git checkout -- .' && echo '' && if [ ! -f .refactor-audit-passed ] && [ ! -f .inject-execution-done ] && [ ! -f .debug-verification-done ]; then echo '  🚫 Recommend verification before commit!' && echo '  → Run /serena-refactor:audit'; fi)) && echo '════════════════════════════════════════════════════════════' || true",
+            "command": "echo '' && echo '════════════════════════════════════════════════════════════' && echo '  💡 Session Ending - Status Check' && echo '════════════════════════════════════════════════════════════' && echo '' && REFACTOR_WF=0 && INJECT_WF=0 && DEBUG_WF=0 && LAB_WF=0 && if [ -f .refactor-analysis-done ] || [ -f .refactor-plan-approved ] || [ -f .refactor-execution-done ]; then echo '  ⚠️  In-progress refactoring workflow:' && ls -la .refactor-* 2>/dev/null | awk '{print \"    \" $NF}' && REFACTOR_WF=1; fi && if [ -f .inject-knowledge-extracted ] || [ -f .inject-plan-approved ] || [ -f .inject-execution-done ]; then echo '  ⚠️  In-progress injection workflow:' && ls -la .inject-* 2>/dev/null | awk '{print \"    \" $NF}' && INJECT_WF=1; fi && if [ -f .debug-discovery-done ] || [ -f .debug-exploration-done ] || [ -f .debug-rootcause-done ] || [ -f .debug-strategy-approved ] || [ -f .debug-fix-applied ] || [ -f .debug-strategy-done ]; then echo '  ⚠️  In-progress debug workflow:' && ls -la .debug-* 2>/dev/null | awk '{print \"    \" $NF}' && DEBUG_WF=1; fi && if [ -f .lab-problem-defined ] || [ -f .lab-approaches-collected ] || [ -f .lab-hypotheses-approved ] || [ -f .lab-experiments-done ]; then echo '  ⚠️  In-progress laboratory workflow:' && ls -la .lab-* 2>/dev/null | awk '{print \"    \" $NF}' && LAB_WF=1; fi && if [ $REFACTOR_WF -eq 0 ] && [ $INJECT_WF -eq 0 ] && [ $DEBUG_WF -eq 0 ] && [ $LAB_WF -eq 0 ]; then echo '  ✓ No workflow in progress'; else echo '' && echo '  Keep state files to continue in next session' && echo '  To cancel: rm .refactor-* .inject-* .debug-* .lab-*'; fi && echo '' && git rev-parse --git-dir > /dev/null 2>&1 && (git diff --quiet HEAD 2>/dev/null || (echo '  ⚠️  Uncommitted changes:' && echo '  → Save: git commit -m \"feat/refactor/fix: ...\"' && echo '  → Rollback: git checkout -- .' && echo '' && if [ ! -f .refactor-audit-passed ] && [ ! -f .inject-execution-done ] && [ ! -f .debug-verification-done ] && [ ! -f .lab-verified ]; then echo '  🚫 Recommend verification before commit!' && echo '  → Run /serena-refactor:audit'; fi)) && echo '════════════════════════════════════════════════════════════' || true",
             "timeout": 10
           }
         ]

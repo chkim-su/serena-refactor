@@ -5,7 +5,6 @@ name: knowledge-extractor
 skills:
   - project-knowledge-graph
   - solid-design-rules
-tools: []
 ---
 # Knowledge Extractor Agent
 

@@ -4,7 +4,6 @@ model: sonnet
 name: e2e-test-runner
 skills:
   - user-simulation-test
-tools: []
 ---
 # E2E Test Runner Agent
 

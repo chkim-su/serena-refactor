@@ -5,7 +5,6 @@ name: lab-verifier
 skills:
   - laboratory-patterns
   - solid-design-rules
-tools: []
 ---
 
 # Lab Verifier Agent

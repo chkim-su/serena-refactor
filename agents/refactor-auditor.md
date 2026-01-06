@@ -3,7 +3,6 @@ description: Refactoring quality auditor. Compares code quality before and after
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
 name: refactor-auditor
-tools: []
 ---
 # Refactor Auditor Agent
 

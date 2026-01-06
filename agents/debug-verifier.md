@@ -5,7 +5,6 @@ name: debug-verifier
 skills:
   - debugging-workflow
   - solid-design-rules
-tools: []
 ---
 # Debug Verifier Agent
 

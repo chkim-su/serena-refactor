@@ -2,7 +2,6 @@
 description: SOLID principle violation analyzer. Analyzes pre-fetched code data to detect violations and provide fix recommendations.
 model: sonnet
 name: serena-solid-analyzer
-tools: []
 ---
 
 # SOLID Analyzer Agent

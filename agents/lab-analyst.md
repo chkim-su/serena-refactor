@@ -5,7 +5,6 @@ name: lab-analyst
 skills:
   - laboratory-patterns
   - solid-design-rules
-tools: []
 ---
 
 # Lab Analyst Agent

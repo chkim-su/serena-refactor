@@ -3,7 +3,6 @@ description: Refactoring plan architect. Creates step-by-step refactoring plans 
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
 name: refactor-planner
-tools: []
 ---
 # Refactor Planner Agent
 

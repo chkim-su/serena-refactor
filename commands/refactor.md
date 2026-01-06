@@ -91,7 +91,7 @@ git stash push -m "pre-refactor-backup-$(date +%Y%m%d-%H%M%S)"
 
 ```
 Task:
-  agent: serena-solid-analyzer
+  agent: "serena-solid-analyzer"
   prompt: |
     Perform SOLID analysis on [target].
 
@@ -110,7 +110,7 @@ Display analysis summary
 
 ```
 Task:
-  agent: refactor-planner
+  agent: "refactor-planner"
   prompt: |
     Create refactoring plan based on SOLID analysis results.
 
@@ -145,7 +145,7 @@ AskUserQuestion:
 #### 3.1 Execute
 ```
 Task:
-  agent: serena-refactor-executor
+  agent: "serena-refactor-executor"
   prompt: |
     Execute refactoring Step [N].
 
@@ -161,7 +161,7 @@ Task:
 #### 3.2 Verify
 ```
 Task:
-  agent: refactor-auditor
+  agent: "refactor-auditor"
   prompt: |
     Verify Step [N] refactoring results.
 
@@ -198,7 +198,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: refactor-auditor
+  agent: "refactor-auditor"
   prompt: |
     Perform final verification of all refactoring results.
 

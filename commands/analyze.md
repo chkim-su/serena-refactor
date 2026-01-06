@@ -86,7 +86,7 @@ Pass gathered data to analysis agent:
 
 ```yaml
 Task:
-  agent: serena-solid-analyzer
+  agent: "serena-solid-analyzer"
   prompt: |
     Analyze the following code data for SOLID principle violations.
 

@@ -112,20 +112,37 @@ code-injector               → .inject-execution-done
 ## 에이전트
 
 ### 분석 에이전트
-- **serena-solid-analyzer**: SOLID 원칙 위반 분석 (데이터 전용)
-- **duplicate-detector**: 코드 클론 탐지 (데이터 전용)
+- `serena-solid-analyzer`: SOLID 원칙 위반 분석 (데이터 전용)
+- `duplicate-detector`: 코드 클론 탐지 (데이터 전용)
 
 ### 계획 에이전트
-- **refactor-planner**: 리팩토링 계획 수립 (데이터 전용)
-- **feature-planner**: 기능 구현 계획 (데이터 전용)
+- `refactor-planner`: 리팩토링 계획 수립 (데이터 전용)
+- `feature-planner`: 기능 구현 계획 (데이터 전용)
 
 ### 실행 에이전트
-- **serena-refactor-executor**: 리팩토링 실행 (계획 기반)
-- **code-injector**: 코드 주입 (계획 기반)
+- `serena-refactor-executor`: 리팩토링 실행 (계획 기반)
+- `code-injector`: 코드 주입 (계획 기반)
 
-### 지원 에이전트
-- **refactor-auditor**: 품질 검증 (실행 결과 분석)
-- **knowledge-extractor**: 프로젝트 지식 그래프 생성
+### 검증 에이전트
+- `refactor-auditor`: 품질 검증 (실행 결과 분석)
+- `knowledge-extractor`: 프로젝트 지식 그래프 생성
+
+### 디버깅 에이전트 (v2.6.0+)
+- `debug-explorer`: 버그 탐색 및 실행 경로 추적
+- `debug-strategist`: 수정 전략 설계 (최소/포괄/방어적)
+- `debug-verifier`: 수정 결과 검증 (직접/회귀/엣지케이스)
+
+### E2E 테스트 에이전트 (v2.6.0+)
+- `e2e-test-runner`: Playwright 기반 사용자 시뮬레이션 테스트
+
+### 실험실 에이전트 (v2.7.0+)
+- **lab-analyst**: 문제 분해 및 가설 설계
+- **lab-experimenter**: 병렬 PoC 실험 조율
+- **lab-verifier**: 실험 결과 검증 및 보고
+- **source-fetcher**: 외부 솔루션 수집 (GitHub, Stack Overflow)
+- **creative-generator**: 창의적/비정통 접근법 생성
+- **llm-consultant**: 멀티 모델 접근법 수집 (Gemini, Codex)
+- **edge-case-hunter**: 엣지 케이스 체계적 발견
 
 ## 스킬
 

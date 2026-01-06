@@ -4,7 +4,6 @@ model: sonnet
 name: creative-generator
 skills:
   - laboratory-patterns
-tools: []
 ---
 
 # Creative Generator Agent

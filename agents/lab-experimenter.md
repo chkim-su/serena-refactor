@@ -5,7 +5,6 @@ name: lab-experimenter
 skills:
   - laboratory-patterns
   - serena-refactoring-patterns
-tools: []
 ---
 
 # Lab Experimenter Agent

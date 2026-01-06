@@ -113,7 +113,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: knowledge-extractor
+  agent: "knowledge-extractor"
   prompt: |
     Extract project knowledge for feature injection.
 
@@ -162,7 +162,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: feature-planner
+  agent: "feature-planner"
   prompt: |
     Plan feature implementation based on project knowledge.
 
@@ -241,7 +241,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: code-injector
+  agent: "code-injector"
   prompt: |
     Perform dry run of injection plan.
 
@@ -259,7 +259,7 @@ Task:
 
 ```
 Task:
-  agent: code-injector
+  agent: "code-injector"
   prompt: |
     Execute injection plan.
 

@@ -3,7 +3,6 @@ description: Duplicate role, variable, and code pattern detector. Identifies cod
 model: sonnet
 name: duplicate-detector
 skills: ["duplicate-detection-rules"]
-tools: []
 ---
 # Duplicate Detector Agent
 

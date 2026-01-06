@@ -6,7 +6,6 @@ skills:
   - debugging-workflow
   - solid-design-rules
   - serena-refactoring-patterns
-tools: []
 ---
 # Debug Strategist Agent
 

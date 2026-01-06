@@ -5,7 +5,7 @@ name: llm-consultant
 skills:
   - laboratory-patterns
   - llm-sdk-guide
-tools: []
+tools: ["Bash"]
 ---
 
 # LLM Consultant Agent

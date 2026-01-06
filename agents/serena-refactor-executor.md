@@ -3,7 +3,6 @@ description: Serena MCP-based refactoring executor. Provides execution guidance 
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
 name: serena-refactor-executor
-tools: []
 ---
 # Serena Refactor Executor Agent
 

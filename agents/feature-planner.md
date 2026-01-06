@@ -6,7 +6,6 @@ skills:
   - project-knowledge-graph
   - feature-injection-rules
   - solid-design-rules
-tools: []
 ---
 # Feature Planner Agent
 

@@ -1,3 +1,8 @@
+---
+description: Scientific experimentation patterns for exploring implementation approaches through hypothesis testing, parallel PoC execution, and rigorous verification. Used by laboratory command for systematic research workflows.
+name: laboratory-patterns
+allowed-tools: ["Read", "Grep", "Glob", "WebSearch", "WebFetch"]
+---
 # Laboratory Patterns Skill
 
 Scientific experimentation patterns for exploring implementation approaches.

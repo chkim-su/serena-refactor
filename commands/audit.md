@@ -36,7 +36,7 @@ If no target provided:
 
 ```
 Task:
-  agent: refactor-auditor
+  agent: "refactor-auditor"
   prompt: |
     Perform code quality audit on [target].
 

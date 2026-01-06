@@ -47,7 +47,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: duplicate-detector
+  agent: "duplicate-detector"
   prompt: |
     Perform duplicate detection on [target].
 

@@ -5,7 +5,6 @@ name: debug-explorer
 skills:
   - debugging-workflow
   - solid-design-rules
-tools: []
 ---
 # Debug Explorer Agent
 

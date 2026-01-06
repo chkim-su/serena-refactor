@@ -288,7 +288,7 @@ AskUserQuestion:
 
 ```
 Task:
-  agent: e2e-test-runner
+  agent: "e2e-test-runner"
   prompt: |
     Execute E2E tests with the following configuration:
 

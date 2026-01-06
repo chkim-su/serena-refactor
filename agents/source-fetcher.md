@@ -4,7 +4,7 @@ model: haiku
 name: source-fetcher
 skills:
   - laboratory-patterns
-tools: []
+tools: ["WebSearch", "WebFetch"]
 ---
 
 # Source Fetcher Agent

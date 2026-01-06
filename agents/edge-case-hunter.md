@@ -5,7 +5,6 @@ name: edge-case-hunter
 skills:
   - laboratory-patterns
   - solid-design-rules
-tools: []
 ---
 
 # Edge Case Hunter Agent

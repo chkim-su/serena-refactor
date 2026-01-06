@@ -35,7 +35,7 @@ mcp__serena__activate_project:
 
 ```
 Task:
-  agent: serena-solid-analyzer
+  agent: "serena-solid-analyzer"
   prompt: |
     Perform SOLID analysis on [target].
     Collect only key information needed for planning.
@@ -45,7 +45,7 @@ Task:
 
 ```
 Task:
-  agent: refactor-planner
+  agent: "refactor-planner"
   prompt: |
     Create detailed refactoring plan based on analysis results.
 

@@ -173,7 +173,7 @@ Launch 2-3 **debug-explorer** agents with different focuses:
 ```yaml
 Agent 1 - Execution Path:
   Task:
-    agent: debug-explorer
+    agent: "debug-explorer"
     prompt: |
       Focus: execution_path
       Bug: [description]
@@ -184,7 +184,7 @@ Agent 1 - Execution Path:
 
 Agent 2 - Data Flow:
   Task:
-    agent: debug-explorer
+    agent: "debug-explorer"
     prompt: |
       Focus: data_flow
       Bug: [description]
@@ -195,7 +195,7 @@ Agent 2 - Data Flow:
 
 Agent 3 - Dependencies:
   Task:
-    agent: debug-explorer
+    agent: "debug-explorer"
     prompt: |
       Focus: dependencies
       Bug: [description]
@@ -289,7 +289,7 @@ Launch 2-3 **debug-strategist** agents with different approaches:
 ```yaml
 Agent 1 - Minimal:
   Task:
-    agent: debug-strategist
+    agent: "debug-strategist"
     prompt: |
       Approach: minimal
       Root Cause: [from Phase 3]
@@ -300,7 +300,7 @@ Agent 1 - Minimal:
 
 Agent 2 - Comprehensive:
   Task:
-    agent: debug-strategist
+    agent: "debug-strategist"
     prompt: |
       Approach: comprehensive
       Root Cause: [from Phase 3]
@@ -311,7 +311,7 @@ Agent 2 - Comprehensive:
 
 Agent 3 - Defensive:
   Task:
-    agent: debug-strategist
+    agent: "debug-strategist"
     prompt: |
       Approach: defensive
       Root Cause: [from Phase 3]
@@ -421,7 +421,7 @@ Launch 2-3 **debug-verifier** agents with different focuses:
 ```yaml
 Agent 1 - Direct:
   Task:
-    agent: debug-verifier
+    agent: "debug-verifier"
     prompt: |
       Focus: direct
       Original bug: [description]
@@ -433,7 +433,7 @@ Agent 1 - Direct:
 
 Agent 2 - Regression:
   Task:
-    agent: debug-verifier
+    agent: "debug-verifier"
     prompt: |
       Focus: regression
       Original bug: [description]
@@ -445,7 +445,7 @@ Agent 2 - Regression:
 
 Agent 3 - Edge Cases:
   Task:
-    agent: debug-verifier
+    agent: "debug-verifier"
     prompt: |
       Focus: edge_cases
       Original bug: [description]

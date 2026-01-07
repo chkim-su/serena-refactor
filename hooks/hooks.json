@@ -206,6 +206,26 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "Bash|Grep|Glob|Read|Search",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 hooks/serena-mcp-guard.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*serena.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 hooks/serena-mcp-tracker.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
         "matcher": "Task",
         "hooks": [
           {

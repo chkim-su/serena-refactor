@@ -26,6 +26,26 @@ Symbol-level SOLID analysis using Serena MCP.
 
 ## Workflow
 
+### Step 0: MCP Server Discovery (MANDATORY)
+
+**Before any analysis, discover the Serena MCP server name:**
+
+The Serena MCP server may be registered under different names (e.g., `serena`, `serena-daemon`).
+
+1. **Check available MCP servers** by looking at the system prompt or using available MCP tools
+2. **Identify the Serena server** - look for names containing "serena"
+3. **Use the discovered name** for all subsequent MCP calls
+
+Common server names:
+- `serena-daemon` (most common)
+- `serena`
+- `plugin:serena:serena`
+
+**If Serena MCP is NOT available:**
+- Inform the user: "Serena MCP server not found. Please ensure it's configured in ~/.claude/mcp_servers.json"
+- DO NOT fall back to generic tools (Bash/Search/Read) - this defeats the purpose
+- Guide user to run the setup or restart Claude Code
+
 ### Step 1: Target Selection
 
 If no target provided:
@@ -42,32 +62,34 @@ AskUserQuestion:
 
 ### Step 2: Gather Data (Main Session MCP Calls)
 
-**Execute these MCP calls directly in the main session:**
+**Execute these MCP calls directly in the main session.**
+
+> Note: Replace `{SERENA_SERVER}` with the actual server name discovered in Step 0 (e.g., `serena-daemon`)
 
 1. **List directory structure:**
 ```
-mcp__serena__list_dir:
+mcp__{SERENA_SERVER}__list_dir:
   relative_path: [target or "."]
   recursive: false
 ```
 
 2. **For each source file, get symbols:**
 ```
-mcp__serena__get_symbols_overview:
+mcp__{SERENA_SERVER}__get_symbols_overview:
   relative_path: [file path]
   depth: 1
 ```
 
 3. **Search for SOLID violation patterns:**
 ```
-mcp__serena__search_for_pattern:
+mcp__{SERENA_SERVER}__search_for_pattern:
   substring_pattern: "switch\\s*\\(|if\\s*\\(.*instanceof"
   restrict_search_to_code_files: true
 ```
 
 4. **For suspicious symbols, get body:**
 ```
-mcp__serena__find_symbol:
+mcp__{SERENA_SERVER}__find_symbol:
   name_path_pattern: [symbol name]
   relative_path: [file path]
   include_body: true
@@ -75,7 +97,7 @@ mcp__serena__find_symbol:
 
 5. **Analyze references for impact scope:**
 ```
-mcp__serena__find_referencing_symbols:
+mcp__{SERENA_SERVER}__find_referencing_symbols:
   name_path: [symbol name]
   relative_path: [file path]
 ```
@@ -143,7 +165,12 @@ Task:
 ┌─────────────────────────────────────────────────────────┐
 │                    Main Session                         │
 │  ┌─────────────┐     ┌─────────────────────────────┐   │
-│  │ MCP Tools   │────▶│ mcp__serena__* calls        │   │
+│  │ Step 0:     │────▶│ Discover Serena MCP server  │   │
+│  │ Discovery   │     │ (serena-daemon, serena, etc)│   │
+│  └─────────────┘     └──────────────┬──────────────┘   │
+│                                      │                  │
+│  ┌─────────────┐     ┌──────────────▼──────────────┐   │
+│  │ MCP Tools   │────▶│ mcp__{SERENA}__* calls      │   │
 │  │ (accessible)│     │ (gather code data)          │   │
 │  └─────────────┘     └──────────────┬──────────────┘   │
 │                                      │                  │
@@ -157,3 +184,12 @@ Task:
 │                      └──────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
 ```
+
+## CRITICAL: Do NOT Fall Back to Generic Tools
+
+If Serena MCP is unavailable or fails:
+- DO NOT use Bash, Search, Read, Grep, or Glob as alternatives
+- These generic tools cannot provide symbol-level analysis
+- Inform user and guide them to configure Serena MCP properly
+
+The serena-mcp-guard hook will warn if generic tools are used without MCP.

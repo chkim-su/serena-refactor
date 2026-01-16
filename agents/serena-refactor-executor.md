@@ -2,6 +2,7 @@
 description: Serena MCP-based refactoring executor. Provides execution guidance for symbol-level code modifications including renaming, extraction, and restructuring.
 model: sonnet
 skills: ["solid-design-rules", "serena-refactoring-patterns"]
+tools: ["mcp__serena__*"]
 name: serena-refactor-executor
 ---
 # Serena Refactor Executor Agent

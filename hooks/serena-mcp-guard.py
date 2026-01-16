@@ -12,8 +12,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict
 
-STATE_DIR = Path("/tmp/serena-mcp-state")
-STATE_DIR.mkdir(exist_ok=True)
+STATE_DIR = Path(".claude/plugin-state/serena-mcp")
+STATE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Violation thresholds
 FIRST_VIOLATION_WARN = 1   # First generic tool without MCP

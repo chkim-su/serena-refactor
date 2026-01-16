@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-STATE_DIR = Path("/tmp/serena-mcp-state")
-STATE_DIR.mkdir(exist_ok=True)
+STATE_DIR = Path(".claude/plugin-state/serena-mcp")
+STATE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def read_input():

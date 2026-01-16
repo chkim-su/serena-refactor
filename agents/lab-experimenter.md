@@ -5,6 +5,7 @@ name: lab-experimenter
 skills:
   - laboratory-patterns
   - serena-refactoring-patterns
+tools: ["mcp__serena__*", "Bash"]
 ---
 
 # Lab Experimenter Agent

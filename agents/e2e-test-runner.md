@@ -4,6 +4,7 @@ model: sonnet
 name: e2e-test-runner
 skills:
   - user-simulation-test
+tools: ["Bash", "mcp__playwright__*"]
 ---
 # E2E Test Runner Agent
 

@@ -5,6 +5,7 @@ name: code-injector
 skills:
   - feature-injection-rules
   - serena-refactoring-patterns
+tools: ["mcp__serena__*"]
 ---
 # Code Injector Agent
 
